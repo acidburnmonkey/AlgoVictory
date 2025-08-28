@@ -1,0 +1,82 @@
+name: depcheck
+
+on: [push]
+
+jobs:
+  depchecktest:
+    runs-on: ubuntu-latest
+    name: depcheck_test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build project with Maven
+        run: mvn -B -ntp clean install
+
+      - name: Depcheck
+        id: depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'Dashboard'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          args: >
+            --failOnCVSS 7
+            --enableRetired
+
+      # Replace GitHub 'upload-artifact' with: archive + upload to a Gitea release
+      - name: Archive depcheck report
+        run: |
+          test -d reports || { echo "reports/ not found"; exit 1; }
+          tar -czf depcheck-report-${{ gitea.sha }}.tar.gz -C reports .
+
+      - name: Create (or get) release and upload asset to Gitea
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+          SERVER_URL: ${{ gitea.server_url }} # e.g., https://gitea.example.com
+          REPO_FULL: ${{ gitea.repository }} # owner/repo
+          TAG: depcheck-${{ gitea.run_number }}
+          SHA: ${{ gitea.sha }}
+        run: |
+          set -euo pipefail
+          OWNER="${REPO_FULL%%/*}"
+          REPO="${REPO_FULL##*/}"
+
+          # Create the release if it doesn't exist; if it does, just fetch it
+          CREATE_RESP=$(curl -sS -X POST "$SERVER_URL/api/v1/repos/$OWNER/$REPO/releases" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token $GITEA_TOKEN" \
+            -d "{\"tag_name\": \"$TAG\", \"name\": \"Depcheck $TAG\", \"target_commitish\": \"$SHA\", \"draft\": false, \"prerelease\": false}" \
+            || true)
+
+          # If already exists, fetch it
+          if echo "$CREATE_RESP" | grep -q '"id"'; then
+            RELEASE_ID=$(echo "$CREATE_RESP" | sed -n 's/.*"id":[ ]*\([0-9]*\).*/\1/p' | head -n1)
+          else
+            # Get by tag
+            GET_RESP=$(curl -sS -H "Authorization: token $GITEA_TOKEN" \
+              "$SERVER_URL/api/v1/repos/$OWNER/$REPO/releases/tags/$TAG")
+            RELEASE_ID=$(echo "$GET_RESP" | sed -n 's/.*"id":[ ]*\([0-9]*\).*/\1/p' | head -n1)
+          fi
+
+          if [ -z "${RELEASE_ID:-}" ]; then
+            echo "Failed to determine RELEASE_ID"; exit 1
+          fi
+
+          ASSET="depcheck-report-${SHA}.tar.gz"
+          # Upload asset (replace if already present)
+          curl -sS -X POST \
+            -H "Authorization: token $GITEA_TOKEN" \
+            -H "Content-Type: application/gzip" \
+            --data-binary @"$ASSET" \
+            "$SERVER_URL/api/v1/repos/$OWNER/$REPO/releases/$RELEASE_ID/assets?name=$ASSET" \
+            > /dev/null
+
+          echo "Uploaded $ASSET to release $TAG (id=$RELEASE_ID)"

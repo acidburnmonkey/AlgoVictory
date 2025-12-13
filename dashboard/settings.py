@@ -33,6 +33,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
     "DEFAULT_PERMISSION_CLASSES": [
@@ -135,6 +136,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = "api.User"
 
 ## DEPLOY change
 CORS_ALLOW_ALL_ORIGINS = True

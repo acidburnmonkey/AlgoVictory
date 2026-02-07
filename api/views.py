@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os
-from django.contrib.auth import get_user_model , logout
-from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from api.serializers import UserSerializer
@@ -21,23 +20,8 @@ else:
     REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
 
 
-
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
-
-def home(request):
-
-    if WEBSITE:
-        target = 'change this'
-    else:
-        target = f'http://127.0.0.1:{REACT_PORT}/home'
-
-    return redirect(target)
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('/')

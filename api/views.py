@@ -1,12 +1,25 @@
-from django.contrib.auth import get_user_model
+from dotenv import load_dotenv
+import os
+from django.contrib.auth import get_user_model , logout
+from django.shortcuts import render, redirect
 from rest_framework import generics
-
-from api.models import Note
-from .serializers import UserSerializer, NoteSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
+from api.serializers import UserSerializer
 
 User = get_user_model()
+
+load_dotenv()
+
+if os.getenv('production'):
+    REACT_PORT = os.getenv('REACT_PORT')
+    API_PORT = os.getenv('API_PORT')
+    WEBSITE = 'changeme'
+    REDIRECT_URI = 'changeme'
+else:
+    REACT_PORT = 5173
+    API_PORT = 8000
+    REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
+
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -15,25 +28,16 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-class NoteListCreate(generics.ListCreateAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
+def home(request):
 
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(author=user)
+    if WEBSITE:
+        target = 'change this'
+    else:
+        target = f'http://127.0.0.1:{REACT_PORT}/home'
 
-    def perform_create(self, serializer):
-        if serializer.is_valid():
-            serializer.save(author=self.request.user)
-        else:
-            print(serializer.errors)
+    return redirect(target)
 
 
-class NoteDelete(generics.DestroyAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(author=user)
+def logout_view(request):
+    logout(request)
+    return redirect('/')

@@ -9,6 +9,9 @@ type FormProps = {
     method: 'login' | 'register';
 };
 
+// Base API url for building the Google OAuth redirect link
+const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
+
 // form for register or login
 function Form({ route, method }: FormProps) {
     const [username, setUsername] = useState<string>('');
@@ -16,6 +19,17 @@ function Form({ route, method }: FormProps) {
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
+
+    const handleGoogleLogin = () => {
+        if (!API_BASE) {
+            alert('API url missing. Set VITE_API_URL in .env');
+            return;
+        }
+
+        const nextUrl = `${window.location.origin}/`;
+        const params = new URLSearchParams({ process: 'login', next: nextUrl });
+        window.location.href = `${API_BASE}/accounts/google/login/?${params.toString()}`;
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setLoading(true);
@@ -49,39 +63,52 @@ function Form({ route, method }: FormProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="form-container">
-            <h1> {method === 'login' ? 'Login' : 'Register'}</h1>
+        <div>
+            <form onSubmit={handleSubmit} className="form-container">
+                <h1> {method === 'login' ? 'Login' : 'Register'}</h1>
 
-            <input
-                className="form-input"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
-            />
-
-            <input
-                className="form-input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-            />
-
-            {method === 'register' ? (
                 <input
                     className="form-input"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Username"
                 />
-            ) : null}
 
-            <button className="form-button" type="submit">
-                {method === 'login' ? 'Login' : 'Register'}
-            </button>
-        </form>
+                <input
+                    className="form-input"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                />
+
+                {method === 'register' ? (
+                    <input
+                        className="form-input"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email"
+                    />
+                ) : null}
+
+                <button className="form-button" type="submit">
+                    {method === 'login' ? 'Login' : 'Register'}
+                </button>
+            </form>
+
+            <div>
+                <button
+                    type="button"
+                    className="form-button google"
+                    onClick={handleGoogleLogin}
+                    disabled={loading}
+                >
+                    Continue with Google
+                </button>
+            </div>
+        </div>
     );
 }
 

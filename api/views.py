@@ -1,9 +1,12 @@
-from dotenv import load_dotenv
 import os
+
 from django.contrib.auth import get_user_model
+from dotenv import load_dotenv
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from api.serializers import UserSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.views import APIView
+from api.serializers import UserSerializer, UserInfoSerializer
+from rest_framework.response import Response
 
 User = get_user_model()
 
@@ -25,3 +28,10 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+
+class UserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserInfoSerializer(request.user)
+        return Response(serializer.data)

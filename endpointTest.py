@@ -4,10 +4,9 @@ token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZX
 
 headers = {'Authorization': f'Bearer {token}'}
 
-res = requests.get('http://127.0.0.1:8000/api/user-info/',headers=headers)
+res = requests.get('http://127.0.0.1:8000/api/user-info/', headers=headers)
 
 
-
-print("Response : " ,res)
+print("Response : ", res)
 print("##" * 44)
-print("Payload :" , res.json())
+print("Payload :", res.json())

@@ -2,11 +2,13 @@ import os
 
 from django.contrib.auth import get_user_model
 from dotenv import load_dotenv
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView
-from api.serializers import UserSerializer, UserInfoSerializer
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from api.serializers import UserInfoSerializer, UserSerializer
 
 User = get_user_model()
 
@@ -35,3 +37,27 @@ class UserInfoView(APIView):
     def get(self, request):
         serializer = UserInfoSerializer(request.user)
         return Response(serializer.data)
+
+
+
+class SocialToken(APIView):
+    """
+    Exchange session authentication  OAuth for JWT tokens
+    """
+    permission_classes = [AllowAny]
+
+    def post(self,request):
+
+        user = request.user
+        token = RefreshToken.for_user(user)
+
+        return  Response({
+            'access': str(token.access_token),
+            'refresh': str(token),
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+            }
+        }, status=status.HTTP_200_OK)
+

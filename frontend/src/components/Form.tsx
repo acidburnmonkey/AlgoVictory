@@ -9,7 +9,6 @@ type FormProps = {
     method: 'login' | 'register';
 };
 
-// Base API url for building the Google OAuth redirect link
 const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
 
 // form for register or login
@@ -20,13 +19,14 @@ function Form({ route, method }: FormProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
 
+    //Google
     const handleGoogleLogin = () => {
         if (!API_BASE) {
             alert('API url missing. Set VITE_API_URL in .env');
             return;
         }
 
-        const nextUrl = `${window.location.origin}/`;
+        const nextUrl = `${window.location.origin}/auth/google/callback`;
         const params = new URLSearchParams({ process: 'login', next: nextUrl });
         window.location.href = `${API_BASE}/accounts/google/login/?${params.toString()}`;
     };
@@ -37,16 +37,6 @@ function Form({ route, method }: FormProps) {
 
         try {
             const response = await api.post(route, { username, password, email });
-
-            console.log(
-                'response: ',
-                ' username:',
-                username,
-                ' password',
-                password,
-                'email: ',
-                email,
-            );
 
             if (method === 'login') {
                 localStorage.setItem(ACCESS_TOKEN, response.data.access);

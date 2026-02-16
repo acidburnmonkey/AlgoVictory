@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import type { Navigation } from 'react-router-dom';
 import { Home, Login, NotFound, Register } from './pages';
-import { AuthProvider, ProtectedRoute } from './components';
+import { AuthProvider, ProtectedRoute, UserCard } from './components';
 
 //logout
 function Logout() {
@@ -23,11 +22,12 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/home" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/user" element={<UserCard />} />
                     <Route
                         path="/auth/google/callback"
                         element={<AuthProvider provider="google" />}
                     />
+                    <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<RegisterAndLogout />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>

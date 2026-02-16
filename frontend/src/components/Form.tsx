@@ -26,7 +26,7 @@ function Form({ route, method }: FormProps) {
             return;
         }
 
-        const nextUrl = `${window.location.origin}/auth/google/callback`;
+        const nextUrl = `${window.location.origin}/home`;
         const params = new URLSearchParams({ process: 'login', next: nextUrl });
         window.location.href = `${API_BASE}/accounts/google/login/?${params.toString()}`;
     };

@@ -170,7 +170,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-LOGIN_REDIRECT_URL = 'http://127.0.0.1:5173/auth/google/callback'
+LOGIN_REDIRECT_URL = 'http://127.0.0.1:5173/home'
 LOGOUT_REDIRECT_URL = 'http://127.0.0.1:5173/login'
 
 ## DEPLOY change

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import api from '../api';
 import type { AxiosResponse } from 'axios';
 import type { userInfo } from '../interfaces';
-import type { UserCard } from '../components';
 
 function Home() {
     const [authenticated, setAuthenticated] = useState(false);

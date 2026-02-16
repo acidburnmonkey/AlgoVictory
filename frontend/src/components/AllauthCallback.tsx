@@ -1,23 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
 
-function AuthProvider({ provider = 'google' }) {
-    const [searchParams] = useSearchParams();
+function AllauthCallback({ provider = 'google' }) {
     const navigate = useNavigate();
     const [error, setError] = useState<string>('');
 
     useEffect(() => {
         const handleCallback = async () => {
             try {
-                const response = await api.post(
-                    '/api/social-token/',
-                    {},
-                    {
-                        withCredentials: true,
-                    },
-                );
+                const response = await api.get('/api/social-token/');
 
                 localStorage.setItem(ACCESS_TOKEN, response.data.access);
                 localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
@@ -54,4 +47,4 @@ function AuthProvider({ provider = 'google' }) {
     );
 }
 
-export default AuthProvider;
+export default AllauthCallback;

@@ -1,5 +1,13 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import { Home, Login, NotFound, Register, Settings } from './pages';
+import {
+    Home,
+    Login,
+    NotFound,
+    PrivacyPolicy,
+    Register,
+    Settings,
+    TermsOfService,
+} from './pages';
 import { AllauthCallback, ProtectedRoute } from './components';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme';
@@ -27,6 +35,8 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/home" element={<Home />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-of-service" element={<TermsOfService />} />
                         <Route
                             path="/auth/google/callback"
                             element={<AllauthCallback provider="google" />}

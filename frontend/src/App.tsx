@@ -1,4 +1,10 @@
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import {
+    BrowserRouter,
+    Route,
+    Routes,
+    Navigate,
+    Outlet,
+} from 'react-router-dom';
 import {
     Home,
     Login,
@@ -11,12 +17,6 @@ import {
 import { AllauthCallback, ProtectedRoute } from './components';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme';
-
-//logout
-function Logout() {
-    localStorage.clear();
-    return <Navigate to="/login/" />;
-}
 
 //register
 function RegisterAndLogout() {
@@ -32,18 +32,30 @@ function App() {
                 <CssBaseline />
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<Home />} />
+                        {/* Public routes */}
                         <Route path="/home" element={<Home />} />
-                        <Route path="/settings" element={<Settings />} />
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/terms-of-service" element={<TermsOfService />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<RegisterAndLogout />} />
+                        <Route path="*" element={<NotFound />} />
+
+                        {/* logged in routes */}
+                        <Route
+                            element={
+                                <ProtectedRoute>
+                                    <Outlet />
+                                </ProtectedRoute>
+                            }
+                        >
+                            <Route path="/settings" element={<Settings />} />
+                        </Route>
+
+                        {/* callbacks server */}
                         <Route
                             path="/auth/google/callback"
                             element={<AllauthCallback provider="google" />}
                         />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<RegisterAndLogout />} />
-                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

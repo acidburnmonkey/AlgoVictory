@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
+import { useAuth } from './AuthContext';
 
 function AllauthCallback({ provider = 'google' }) {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [error, setError] = useState<string>('');
 
     useEffect(() => {
         const handleCallback = async () => {
             try {
                 const response = await api.get('/api/social-token/');
+                console.log('response:', response);
+                login(response.data.access, response.data.refresh);
 
-                localStorage.setItem(ACCESS_TOKEN, response.data.access);
-                localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-
-                navigate('/');
+                navigate('/home');
             } catch (err: any) {
                 console.error(`${provider} login error:`, err);
                 setError(

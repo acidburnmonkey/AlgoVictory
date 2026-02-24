@@ -1,10 +1,4 @@
-import {
-    BrowserRouter,
-    Route,
-    Routes,
-    Navigate,
-    Outlet,
-} from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
 import {
     Home,
     Login,
@@ -14,7 +8,7 @@ import {
     Settings,
     TermsOfService,
 } from './pages';
-import { AllauthCallback, ProtectedRoute } from './components';
+import { ProtectedRoute } from './components';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme';
 
@@ -52,10 +46,6 @@ function App() {
                         </Route>
 
                         {/* callbacks server */}
-                        <Route
-                            path="/auth/google/callback"
-                            element={<AllauthCallback provider="google" />}
-                        />
                     </Routes>
                 </BrowserRouter>
             </ThemeProvider>

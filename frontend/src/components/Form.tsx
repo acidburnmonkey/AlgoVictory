@@ -9,7 +9,7 @@ type FormProps = {
     method: 'login' | 'register';
 };
 
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
+const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
 
 // form for register or login
 function Form({ route, method }: FormProps) {
@@ -21,14 +21,14 @@ function Form({ route, method }: FormProps) {
 
     //Google
     const handleGoogleLogin = () => {
-        if (!API_BASE) {
+        if (!API_URL) {
             alert('API url missing. Set VITE_API_URL in .env');
             return;
         }
 
-        const nextUrl = `${window.location.origin}/home`;
+        const nextUrl = `${API_URL}/api/social-token/`;
         const params = new URLSearchParams({ process: 'login', next: nextUrl });
-        window.location.href = `${API_BASE}/accounts/google/login/?${params.toString()}`;
+        window.location.href = `${API_URL}/accounts/google/login/?${params.toString()}`;
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

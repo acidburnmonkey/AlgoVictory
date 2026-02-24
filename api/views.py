@@ -1,8 +1,11 @@
+import logging
 import os
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
+from django.utils.http import urlencode
 from dotenv import load_dotenv
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,7 +16,6 @@ from api.serializers import UserInfoSerializer, UserSerializer
 User = get_user_model()
 
 load_dotenv()
-
 if os.getenv('production'):
     REACT_PORT = os.getenv('REACT_PORT')
     API_PORT = os.getenv('API_PORT')
@@ -23,6 +25,11 @@ else:
     REACT_PORT = 5173
     API_PORT = 8000
     REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
+
+logger = logging.getLogger(__name__)
+level = logging.DEBUG
+formatter = " %(levelname)s | %(funcName)s| %(message)s"
+logging.basicConfig(format=formatter, level=level)
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -40,25 +47,27 @@ class UserInfoView(APIView):
 
 
 class SocialToken(APIView):
-    """
-    Exchange session authentication  OAuth for JWT tokens
-    """
+    """Exchanging allauth session tokens for JWT"""
 
     permission_classes = [AllowAny]
 
-    def post(self, request):
-        user = request.user
-        token = RefreshToken.for_user(user)
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Not authenticated'}, status=401)
 
-        return Response(
+        token = RefreshToken.for_user(request.user)
+
+        frontend_url = os.getenv('FRONTEND_URL')
+
+        logger.debug(frontend_url)
+
+        params = urlencode(
             {
                 'access': str(token.access_token),
                 'refresh': str(token),
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                },
-            },
-            status=status.HTTP_200_OK,
+            }
         )
+
+        logger.debug(params)
+
+        return redirect(f'{frontend_url}/home?{params}')

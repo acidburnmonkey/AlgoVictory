@@ -5,7 +5,7 @@ import type { userInfo } from '../interfaces';
 import { useAuth } from '../components/AuthContext';
 
 function Home() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, login } = useAuth();
     const [user, setUser] = useState('');
 
     //for testing remove after moving to protected routs
@@ -24,6 +24,15 @@ function Home() {
     };
 
     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const access = params.get('access');
+        const refresh = params.get('refresh');
+
+        if (access && refresh) {
+            console.debug('access token from social: ', access);
+            login(access, refresh);
+            window.history.replaceState({}, '', '/home');
+        }
         checkAuth();
     }, []);
 

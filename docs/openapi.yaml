@@ -1,0 +1,261 @@
+openapi: 3.0.0
+info:
+  title: AlgoVictory API
+  version: 0.1.0
+  description: |
+    HTTP API for AlgoVictory. The service is a Django 5 + Django REST Framework application
+    that issues JWTs via SimpleJWT, supports Google sign-in through django-allauth. 
+servers:
+  - url: http://127.0.0.1:8000
+    description: Local development
+  - url: http://localhost:8000
+    description: Local development (localhost)
+tags:
+  - name: Auth
+    description: Account creation and JWT lifecycle
+  - name: Users
+    description: Authenticated user profile access
+  - name: Social
+    description: Session-to-JWT exchange after social login
+paths:
+  /api/user/register/:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      description: Creates a user account using a username, email, and password.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+            examples:
+              default:
+                summary: Basic registration
+                value:
+                  username: janedoe
+                  email: jane@example.com
+                  password: Passw0rd!
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/token/:
+    post:
+      tags: [Auth]
+      summary: Obtain JWT access and refresh tokens
+      description: Exchanges username and password for a token pair using SimpleJWT.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainRequest'
+            examples:
+              password-login:
+                summary: Password login
+                value:
+                  username: janedoe
+                  password: Passw0rd!
+      responses:
+        '200':
+          description: Token pair issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenPair'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/token/refresh/:
+    post:
+      tags: [Auth]
+      summary: Refresh an access token
+      description: Exchanges a valid refresh token for a new access token. Refresh tokens expire after 1 day.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+            examples:
+              refresh:
+                value:
+                  refresh: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      responses:
+        '200':
+          description: New access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefreshResponse'
+        '401':
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/user-info/:
+    get:
+      tags: [Users]
+      summary: Get the authenticated user's profile
+      description: Returns profile data for the currently authenticated user.
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '401':
+          description: Missing or invalid JWT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/social-token/:
+    get:
+      tags: [Social]
+      summary: Exchange a social session for JWTs
+      description: |
+        After authenticating with Google via django-allauth, this endpoint converts the
+        authenticated session into JWT access and refresh tokens and redirects the user
+        to the frontend with the tokens in the query string. Requests must include the
+        allauth session cookie (browser flow). If the session is missing, a 401 JSON
+        error is returned.
+      responses:
+        '302':
+          description: Redirect to the frontend with `access` and `refresh` query params
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required: [error]
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UserRegistrationRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+      required: [id, username, email]
+
+    UserInfo:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            first_name:
+              type: string
+            last_name:
+              type: string
+            provider:
+              type: string
+              description: Authentication provider identifier (`google` or `local`).
+            avatar:
+              type: string
+              format: uri
+              nullable: true
+            premium:
+              type: boolean
+              default: false
+            payment_date:
+              type: string
+              format: date-time
+              nullable: true
+            payment_expires:
+              type: string
+              format: date-time
+              nullable: true
+
+    TokenObtainRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+
+    TokenPair:
+      type: object
+      required: [refresh, access]
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+
+    TokenRefreshRequest:
+      type: object
+      required: [refresh]
+      properties:
+        refresh:
+          type: string
+
+    TokenRefreshResponse:
+      type: object
+      required: [access]
+      properties:
+        access:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+      required: [detail]
+
+security:
+  - bearerAuth: []

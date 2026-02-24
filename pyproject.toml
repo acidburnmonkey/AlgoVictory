@@ -1,7 +1,7 @@
 [project]
-name = "divinatio"
+name = "AlgoVictory"
 version = "0.1.0"
-description = "Dashboard for testing and creating user accounts and data"
+description = "Match prediction Website django + react"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

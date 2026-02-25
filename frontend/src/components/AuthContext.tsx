@@ -15,6 +15,7 @@ import type { userInfo } from '../interfaces';
 interface AuthContextType {
     isAuthenticated: boolean | null;
     user: string | null;
+    avatar: string | null;
     login: (access: string, refresh: string) => void;
     logout: () => void;
 }
@@ -24,6 +25,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [user, setUser] = useState<string | null>(null);
+    const [avatar, setAvatar] = useState<string | null>(null);
 
     useEffect(() => {
         console.debug('calling Auth()');
@@ -35,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             getUserInfo();
         } else if (isAuthenticated === false) {
             setUser(null);
+            setAvatar(null);
         }
     }, [isAuthenticated]);
 
@@ -78,6 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (response.status === 200) {
                 const data: userInfo = response.data;
                 setUser(data.username);
+                setAvatar(data.avatar);
             }
         } catch (err) {
             console.log('err', err);
@@ -98,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, avatar, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

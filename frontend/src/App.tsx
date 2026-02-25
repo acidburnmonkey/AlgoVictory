@@ -8,7 +8,7 @@ import {
     Settings,
     TermsOfService,
 } from './pages';
-import { ProtectedRoute } from './components';
+import { NavBar, ProtectedRoute } from './components';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/theme';
 
@@ -25,6 +25,7 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <BrowserRouter>
+                    <NavBar />
                     <Routes>
                         {/* Public routes */}
                         <Route path="/home" element={<Home />} />

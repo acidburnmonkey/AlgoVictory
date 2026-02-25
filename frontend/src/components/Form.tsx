@@ -1,8 +1,22 @@
 import { useState } from 'react';
 import api from '../api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
-import '../styles/Form.css';
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Divider,
+    InputAdornment,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import GoogleIcon from '@mui/icons-material/Google';
 
 type FormProps = {
     route: string;
@@ -11,15 +25,15 @@ type FormProps = {
 
 const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
 
-// form for register or login
 function Form({ route, method }: FormProps) {
-    const [username, setUsername] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    //Google
+    const isLogin = method === 'login';
+
     const handleGoogleLogin = () => {
         if (!API_URL) {
             alert('API url missing. Set VITE_API_URL in .env');
@@ -38,10 +52,10 @@ function Form({ route, method }: FormProps) {
         try {
             const response = await api.post(route, { username, password, email });
 
-            if (method === 'login') {
+            if (isLogin) {
                 localStorage.setItem(ACCESS_TOKEN, response.data.access);
                 localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-                navigate('/');
+                navigate('/home');
             } else {
                 navigate('/login');
             }
@@ -53,52 +67,212 @@ function Form({ route, method }: FormProps) {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit} className="form-container">
-                <h1> {method === 'login' ? 'Login' : 'Register'}</h1>
-
-                <input
-                    className="form-input"
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
+        <Box
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '80vh',
+                px: 2,
+            }}
+        >
+            <Box
+                sx={{
+                    width: '100%',
+                    maxWidth: 420,
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    background: (t) =>
+                        `linear-gradient(145deg, ${alpha(t.palette.background.paper, 0.75)}, ${alpha(t.palette.background.paper, 0.4)})`,
+                    backdropFilter: 'blur(20px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                    border: (t) => `1px solid ${alpha(t.palette.primary.main, 0.15)}`,
+                    boxShadow: (t) =>
+                        `0 8px 32px ${alpha('#000', 0.5)}, inset 0 1px 0 ${alpha(t.palette.primary.main, 0.1)}`,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        borderColor: (t) => alpha(t.palette.primary.main, 0.3),
+                        boxShadow: (t) =>
+                            `0 12px 40px ${alpha(t.palette.primary.main, 0.1)}, inset 0 1px 0 ${alpha(t.palette.primary.main, 0.15)}`,
+                    },
+                }}
+            >
+                {/* Shimmer accent bar */}
+                <Box
+                    sx={{
+                        height: '3px',
+                        background:
+                            'linear-gradient(90deg, #FF8F00, #FFB300, #FFD54F, #FFB300, #FF8F00)',
+                        backgroundSize: '200% 100%',
+                        animation: 'shimmer 2.5s infinite linear',
+                        '@keyframes shimmer': {
+                            '0%': { backgroundPosition: '200% 0' },
+                            '100%': { backgroundPosition: '-200% 0' },
+                        },
+                    }}
                 />
 
-                <input
-                    className="form-input"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                />
-
-                {method === 'register' ? (
-                    <input
-                        className="form-input"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                    />
-                ) : null}
-
-                <button className="form-button" type="submit">
-                    {method === 'login' ? 'Login' : 'Register'}
-                </button>
-            </form>
-
-            <div>
-                <button
-                    type="button"
-                    className="form-button google"
-                    onClick={handleGoogleLogin}
-                    disabled={loading}
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit}
+                    sx={{ p: { xs: 3, sm: 4 }, pt: { xs: 4, sm: 5 } }}
                 >
-                    Continue with Google
-                </button>
-            </div>
-        </div>
+                    <Stack spacing={3} alignItems="center">
+                        <Typography
+                            variant="h4"
+                            sx={{
+                                fontWeight: 700,
+                                background:
+                                    'linear-gradient(135deg, #FFD54F 0%, #FFB300 50%, #FF8F00 100%)',
+                                backgroundClip: 'text',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                mb: 1,
+                            }}
+                        >
+                            {isLogin ? 'Welcome Back' : 'Create Account'}
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            sx={{ color: 'text.secondary', mt: -2 }}
+                        >
+                            {isLogin ? 'Sign in to continue' : 'Join us to get started'}
+                        </Typography>
+
+                        <TextField
+                            fullWidth
+                            label="Username"
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <PersonOutlineRoundedIcon
+                                                sx={{ color: 'text.secondary', fontSize: 20 }}
+                                            />
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            slotProps={{
+                                input: {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <LockOutlinedIcon
+                                                sx={{ color: 'text.secondary', fontSize: 20 }}
+                                            />
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
+                        />
+
+                        {!isLogin && (
+                            <TextField
+                                fullWidth
+                                label="Email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <EmailOutlinedIcon
+                                                    sx={{ color: 'text.secondary', fontSize: 20 }}
+                                                />
+                                            </InputAdornment>
+                                        ),
+                                    },
+                                }}
+                            />
+                        )}
+
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            disabled={loading}
+                            sx={{
+                                py: 1.4,
+                                fontSize: '0.95rem',
+                                mt: 1,
+                            }}
+                        >
+                            {loading ? (
+                                <CircularProgress size={24} sx={{ color: '#0a0a0a' }} />
+                            ) : isLogin ? (
+                                'Sign In'
+                            ) : (
+                                'Create Account'
+                            )}
+                        </Button>
+
+                        <Divider
+                            flexItem
+                            sx={{
+                                '&::before, &::after': {
+                                    borderColor: (t) => alpha(t.palette.primary.main, 0.15),
+                                },
+                            }}
+                        >
+                            <Typography
+                                variant="caption"
+                                sx={{ color: 'text.secondary', px: 1 }}
+                            >
+                                or
+                            </Typography>
+                        </Divider>
+
+                        <Button
+                            variant="outlined"
+                            fullWidth
+                            onClick={handleGoogleLogin}
+                            disabled={loading}
+                            startIcon={<GoogleIcon />}
+                            sx={{ py: 1.3 }}
+                        >
+                            Continue with Google
+                        </Button>
+
+                        <Typography variant="body2" sx={{ color: 'text.secondary', pt: 1 }}>
+                            {isLogin
+                                ? "Don't have an account? "
+                                : 'Already have an account? '}
+                            <Typography
+                                component={RouterLink}
+                                to={isLogin ? '/register' : '/login'}
+                                variant="body2"
+                                sx={{
+                                    color: 'primary.main',
+                                    textDecoration: 'none',
+                                    fontWeight: 600,
+                                    '&:hover': {
+                                        textDecoration: 'underline',
+                                    },
+                                }}
+                            >
+                                {isLogin ? 'Sign Up' : 'Sign In'}
+                            </Typography>
+                        </Typography>
+                    </Stack>
+                </Box>
+            </Box>
+        </Box>
     );
 }
 

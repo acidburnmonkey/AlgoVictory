@@ -1,27 +1,8 @@
-import { useState, useEffect } from 'react';
-import api from '../api';
-import type { AxiosResponse } from 'axios';
-import type { userInfo } from '../interfaces';
+import { useEffect } from 'react';
 import { useAuth } from '../components/AuthContext';
 
 function Home() {
-    const { isAuthenticated, login } = useAuth();
-    const [user, setUser] = useState('');
-
-    //for testing remove after moving to protected routs
-    const checkAuth = async () => {
-        try {
-            const response: AxiosResponse = await api.get('/api/user-info/');
-            console.log('response user-info:', response);
-
-            if (response.status === 200) {
-                const data: userInfo = response.data;
-                setUser(data.username);
-            }
-        } catch (err) {
-            console.log('err', err);
-        }
-    };
+    const { isAuthenticated, login, user } = useAuth();
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -33,7 +14,6 @@ function Home() {
             login(access, refresh);
             window.history.replaceState({}, '', '/home');
         }
-        checkAuth();
     }, []);
 
     return (

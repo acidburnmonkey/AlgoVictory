@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useAuth } from '../components/AuthContext';
+import { Link } from 'react-router-dom';
 
 function Home() {
     const { isAuthenticated, login, user } = useAuth();
@@ -10,7 +11,6 @@ function Home() {
         const refresh = params.get('refresh');
 
         if (access && refresh) {
-            console.debug('access token from social: ', access);
             login(access, refresh);
             window.history.replaceState({}, '', '/home');
         }
@@ -25,6 +25,15 @@ function Home() {
                 ) : (
                     <h2> You are NOT authenticated </h2>
                 )}
+            </div>
+            <div>
+                <nav>
+                    <Link to="/home">| Home |</Link>
+                    <Link to="/login">| login |</Link>
+                    <Link to="/register">| Register |</Link>
+                    <Link to="/terms-of-service">| terms-of-service |</Link>
+                    <Link to="/privacy-policy">| privacy-policy |</Link>
+                </nav>
             </div>
         </div>
     );

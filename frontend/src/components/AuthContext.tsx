@@ -26,12 +26,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<string | null>(null);
 
     useEffect(() => {
+        console.debug('calling Auth()');
         auth().catch(() => setIsAuthenticated(false));
     }, []);
 
     useEffect(() => {
-        getUserInfo();
-        console.debug('calling getUserInfo');
+        if (isAuthenticated) {
+            getUserInfo();
+        } else if (isAuthenticated === false) {
+            setUser(null);
+        }
     }, [isAuthenticated]);
 
     //main auth loginc

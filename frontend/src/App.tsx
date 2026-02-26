@@ -1,16 +1,15 @@
-import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
-import {
-    Home,
-    Login,
-    NotFound,
-    PrivacyPolicy,
-    Register,
-    Settings,
-    TermsOfService,
-} from './pages';
-import { NavBar, ProtectedRoute } from './components';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import theme from './styles/theme';
+import { useState } from 'react';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import type { Navigation } from 'react-router-dom';
+import { Home, Login, NotFound, Register } from './pages';
+import ProtectedRoute from './components/ProtectedRoute';
+import Leagues from './components/Leagues'; 
+
+//logout
+function Logout() {
+    localStorage.clear();
+    return <Navigate to="/login/" />;
+}
 
 //register
 function RegisterAndLogout() {
@@ -22,34 +21,16 @@ function RegisterAndLogout() {
 function App() {
     return (
         <>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <BrowserRouter>
-                    <NavBar />
-                    <Routes>
-                        {/* Public routes */}
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                        <Route path="/terms-of-service" element={<TermsOfService />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<RegisterAndLogout />} />
-                        <Route path="*" element={<NotFound />} />
-
-                        {/* logged in routes */}
-                        <Route
-                            element={
-                                <ProtectedRoute>
-                                    <Outlet />
-                                </ProtectedRoute>
-                            }
-                        >
-                            <Route path="/settings" element={<Settings />} />
-                        </Route>
-
-                        {/* callbacks server */}
-                    </Routes>
-                </BrowserRouter>
-            </ThemeProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<RegisterAndLogout />} />
+                    <Route path="/leagues" element={ <Leagues /> } />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </BrowserRouter>
         </>
     );
 }

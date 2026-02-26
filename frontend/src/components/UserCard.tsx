@@ -5,16 +5,9 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import PersonIcon from '@mui/icons-material/Person';
 import type { userInfo } from '../interfaces';
-import { useEffect, useState } from 'react';
 
 function UserCard(props: userInfo) {
-    const [paid, setPaid] = useState(false);
-
-    useEffect(() => {
-        if (props.premium) {
-            setPaid(true);
-        }
-    }, []);
+    const paid = props.premium;
 
     return (
         <Box

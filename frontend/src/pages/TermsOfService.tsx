@@ -37,9 +37,7 @@ function BulletList({ items }: { items: string[] }) {
             {items.map((item) => (
                 <ListItem key={item} disableGutters sx={{ py: 0.25 }}>
                     <ListItemIcon sx={{ minWidth: 24 }}>
-                        <BulletIcon
-                            sx={{ fontSize: 8, color: 'primary.main' }}
-                        />
+                        <BulletIcon sx={{ fontSize: 8, color: 'primary.main' }} />
                     </ListItemIcon>
                     <ListItemText
                         primary={item}
@@ -68,52 +66,40 @@ function TermsOfService() {
                         mb: 1,
                     }}
                 >
-                    <GavelIcon
-                        sx={{ fontSize: 36, color: 'primary.main' }}
-                    />
+                    <GavelIcon sx={{ fontSize: 36, color: 'primary.main' }} />
                     <Typography variant="h4" color="primary">
                         Terms of Service
                     </Typography>
                 </Box>
 
                 <Typography variant="body2" color="text.secondary" mb={0.5}>
-                    <strong>Effective Date:</strong> [Insert Date]
+                    <strong>Effective Date:</strong> Jan 26, 2026
                 </Typography>
                 <Typography variant="body2" color="text.secondary" mb={0.5}>
-                    <strong>Website:</strong> [yourdomain.com]
+                    <strong>Website:</strong> algovictory.com
                 </Typography>
                 <Typography variant="body2" color="text.secondary" mb={3}>
-                    <strong>Contact:</strong> [your@email.com]
+                    <strong>Contact:</strong> algovictory.unify491@aleeas.com
                 </Typography>
 
                 <Divider sx={{ mb: 3 }} />
 
                 <Section title="1. Acceptance of Terms">
                     <Typography variant="body2" color="text.secondary">
-                        By accessing, registering, or purchasing premium
-                        services from this website, you agree to be bound by
-                        these Terms of Service. If you do not agree, you must
-                        not use this website.
+                        By accessing, registering, or purchasing premium services from this
+                        website, you agree to be bound by these Terms of Service. If you do
+                        not agree, you must not use this website.
                     </Typography>
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mt: 1 }}
-                    >
-                        You must be at least 18 years old (or 21 where required
-                        by your state) to use this website.
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        You must be at least 18 years old (or 21 where required by your
+                        state) to use this website.
                     </Typography>
                 </Section>
 
                 <Section title="2. Nature of the Service">
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 1 }}
-                    >
-                        This website provides sports predictions, analysis, and
-                        related informational content for entertainment purposes
-                        only.
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        This website provides sports predictions, analysis, and related
+                        informational content for entertainment purposes only.
                     </Typography>
                     <BulletList
                         items={[
@@ -125,11 +111,7 @@ function TermsOfService() {
                 </Section>
 
                 <Section title="3. No Guarantee of Accuracy or Winnings">
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 1 }}
-                    >
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                         Sports events are unpredictable. We do not guarantee:
                     </Typography>
                     <BulletList
@@ -139,31 +121,22 @@ function TermsOfService() {
                             'Financial gain or profits',
                         ]}
                     />
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mt: 1 }}
-                    >
-                        You assume full responsibility for any financial
-                        decisions made based on our content.
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        You assume full responsibility for any financial decisions made
+                        based on our content.
                     </Typography>
                 </Section>
 
                 <Section title="4. No Financial or Gambling Advice">
                     <Typography variant="body2" color="text.secondary">
-                        The content on this website does not constitute
-                        financial, legal, investment, or gambling advice. You
-                        are responsible for complying with gambling laws in your
-                        jurisdiction.
+                        The content on this website does not constitute financial, legal,
+                        investment, or gambling advice. You are responsible for complying
+                        with gambling laws in your jurisdiction.
                     </Typography>
                 </Section>
 
                 <Section title="5. Premium Subscriptions & Payments">
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 1 }}
-                    >
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                         If you purchase premium access:
                     </Typography>
                     <BulletList
@@ -178,40 +151,38 @@ function TermsOfService() {
 
                 <Section title="6. Account Responsibility">
                     <Typography variant="body2" color="text.secondary">
-                        You are responsible for maintaining the confidentiality
-                        of your account credentials and all activities under
-                        your account.
+                        You are responsible for maintaining the confidentiality of your
+                        account credentials and all activities under your account.
                     </Typography>
                 </Section>
 
                 <Section title="7. Limitation of Liability">
                     <Typography variant="body2" color="text.secondary">
-                        To the fullest extent permitted by law, we are not
-                        liable for any financial losses, lost profits, or
-                        damages arising from use of this website.
+                        To the fullest extent permitted by law, we are not liable for any
+                        financial losses, lost profits, or damages arising from use of this
+                        website.
                     </Typography>
                 </Section>
 
                 <Section title="8. Intellectual Property">
                     <Typography variant="body2" color="text.secondary">
-                        All content, predictions, branding, and materials are
-                        the property of [Your Website Name]. Unauthorized
-                        reproduction or redistribution is prohibited.
+                        All content, predictions, branding, and materials are the property
+                        of [Your Website Name]. Unauthorized reproduction or redistribution
+                        is prohibited.
                     </Typography>
                 </Section>
 
                 <Section title="9. Governing Law">
                     <Typography variant="body2" color="text.secondary">
-                        These Terms are governed by the laws of the United
-                        States and the State of [Your State].
+                        These Terms are governed by the laws of the United States and the
+                        State of [Your State].
                     </Typography>
                 </Section>
 
                 <Section title="10. Changes to Terms">
                     <Typography variant="body2" color="text.secondary">
-                        We reserve the right to update these Terms at any time.
-                        Continued use of the website constitutes acceptance of
-                        changes.
+                        We reserve the right to update these Terms at any time. Continued
+                        use of the website constitutes acceptance of changes.
                     </Typography>
                 </Section>
 
@@ -223,7 +194,7 @@ function TermsOfService() {
                     textAlign="center"
                     display="block"
                 >
-                    &copy; 2026 [Your Website Name]. All rights reserved.
+                    &copy; 2026 algovictory.com . All rights reserved.
                 </Typography>
             </Paper>
         </Container>

@@ -47,9 +47,13 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     def get_avatar(self, obj):
         social_account = SocialAccount.objects.filter(user=obj).first()
+
         if social_account and social_account.extra_data:
             if social_account.provider == 'google':
                 return social_account.extra_data.get('picture')
+            elif social_account.provider == 'twitter_oauth2':
+                return social_account.extra_data.get('profile_image_url')
+
         return None
 
     def get_provider(self, obj):

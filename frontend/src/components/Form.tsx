@@ -17,6 +17,7 @@ import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import GoogleIcon from '@mui/icons-material/Google';
+import { Twitter } from '@mui/icons-material';
 
 type FormProps = {
     route: string;
@@ -43,6 +44,17 @@ function Form({ route, method }: FormProps) {
         const nextUrl = `${API_URL}/api/social-token/`;
         const params = new URLSearchParams({ process: 'login', next: nextUrl });
         window.location.href = `${API_URL}/accounts/google/login/?${params.toString()}`;
+    };
+
+    const handleXlogin = () => {
+        if (!API_URL) {
+            alert('API url missing. Set VITE_API_URL in .env');
+            return;
+        }
+
+        const nextUrl = `${API_URL}/api/social-token/`;
+        const params = new URLSearchParams({ process: 'login', next: nextUrl });
+        window.location.href = `${API_URL}/accounts/twitter_oauth2/login/?${params.toString()}`;
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -247,6 +259,17 @@ function Form({ route, method }: FormProps) {
                             sx={{ py: 1.3 }}
                         >
                             Continue with Google
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            fullWidth
+                            onClick={handleXlogin}
+                            disabled={loading}
+                            startIcon={<Twitter />}
+                            sx={{ py: 1.3 }}
+                        >
+                            Continue with X
                         </Button>
 
                         <Typography variant="body2" sx={{ color: 'text.secondary', pt: 1 }}>

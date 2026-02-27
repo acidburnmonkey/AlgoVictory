@@ -49,11 +49,9 @@ class UserInfoView(APIView):
 class SocialToken(APIView):
     """Exchanging allauth session tokens for JWT"""
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        if not request.user.is_authenticated:
-            return Response({'error': 'Not authenticated'}, status=401)
 
         token = RefreshToken.for_user(request.user)
 

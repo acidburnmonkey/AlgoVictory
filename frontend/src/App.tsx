@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import type { Navigation } from 'react-router-dom';
-import { Home, Login, NotFound, Register } from './pages';
+import { Home, Login, NotFound, Register, TermsOfService, PrivacyPolicy } from './pages';
 import ProtectedRoute from './components/ProtectedRoute';
 import Leagues from './components/Leagues'; 
 
@@ -28,6 +28,8 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<RegisterAndLogout />} />
                     <Route path="/leagues" element={ <Leagues /> } />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/terms-of-service" element={<TermsOfService />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>

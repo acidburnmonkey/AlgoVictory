@@ -38,7 +38,7 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]         # AllowAny: allows everyone to see view
 
 
-
+'''
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
     permission_classes = [IsAuthenticated]
@@ -61,7 +61,7 @@ class NoteDelete(generics.DestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return Note.objects.filter(author=user)
-
+'''
 
 class ExternalFightersView(APIView):
     """
@@ -105,3 +105,11 @@ class SocialToken(APIView):
         logger.debug(params)
 
         return redirect(f'{frontend_url}/home?{params}')
+    
+
+class UserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        serializer = UserInfoSerializer(request.user)
+        return Response(serializer.data)

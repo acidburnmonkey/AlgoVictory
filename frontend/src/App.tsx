@@ -8,8 +8,8 @@ import {
     Settings,
     TermsOfService,
 } from './pages';
-import { NavBar, ProtectedRoute } from './components';
-import { ThemeProvider, CssBaseline } from '@mui/material';
+import { Footer, NavBar, ProtectedRoute } from './components';
+import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import theme from './styles/theme';
 
 //register
@@ -25,6 +25,7 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <BrowserRouter>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                     <NavBar />
                     <Routes>
                         {/* Public routes */}
@@ -45,9 +46,9 @@ function App() {
                         >
                             <Route path="/settings" element={<Settings />} />
                         </Route>
-
-                        {/* callbacks server */}
                     </Routes>
+                    <Footer />
+                    </Box>
                 </BrowserRouter>
             </ThemeProvider>
         </>

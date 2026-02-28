@@ -4,7 +4,7 @@ info:
   version: 0.1.0
   description: |
     HTTP API for AlgoVictory. The service is a Django 5 + Django REST Framework application
-    that issues JWTs via SimpleJWT, supports Google sign-in through django-allauth. 
+    that issues JWTs via SimpleJWT, supports Google and Twitter sign-in through django-allauth. 
 servers:
   - url: http://127.0.0.1:8000
     description: Local development
@@ -16,7 +16,7 @@ tags:
   - name: Users
     description: Authenticated user profile access
   - name: Social
-    description: Session-to-JWT exchange after social login
+    description: Social login flow via django-allauth and the subsequent session-to-JWT exchange
 paths:
   /api/user/register/:
     post:
@@ -54,7 +54,7 @@ paths:
   /api/token/:
     post:
       tags: [Auth]
-      summary: Obtain JWT access and refresh tokens
+      summary: Login end point
       description: Exchanges username and password for a token pair using SimpleJWT.
       security: []
       requestBody:
@@ -137,11 +137,16 @@ paths:
       tags: [Social]
       summary: Exchange a social session for JWTs
       description: |
-        After authenticating with Google via django-allauth, this endpoint converts the
-        authenticated session into JWT access and refresh tokens and redirects the user
-        to the frontend with the tokens in the query string. Requests must include the
-        allauth session cookie (browser flow). If the session is missing, a 401 JSON
-        error is returned.
+        `LOGIN_REDIRECT_URL` in Django settings points to this endpoint (`/api/social-token/`).
+        After django-allauth finishes the provider login and sets the user session, the
+        browser is redirected here. The view requires the authenticated session (no
+        direct API clients) and converts it into SimpleJWT access and refresh tokens,
+        then redirects to the configured frontend URL (`FRONTEND_URL`) with `access`
+        and `refresh` tokens in the query string.
+
+        If the session is missing or expired, a 401 JSON error is returned. This endpoint
+        is intended only as an internal redirect target; callers should not hit it
+        directly without first completing the social login.
       responses:
         '302':
           description: Redirect to the frontend with `access` and `refresh` query params
@@ -155,6 +160,34 @@ paths:
                   error:
                     type: string
                 required: [error]
+
+  /accounts/google/login/:
+    get:
+      tags: [Social]
+      summary: Start Google OAuth2 login (redirect)
+      description: |
+        Frontend initiates Google sign-in by calling this django-allauth endpoint.
+        It responds with a 302 redirect to Google's OAuth consent screen. After a
+        successful grant, allauth returns the browser to `LOGIN_REDIRECT_URL`
+        (`/api/social-token/`) where the session is exchanged for JWTs.
+      security: []
+      responses:
+        '302':
+          description: Redirects the browser to Google OAuth consent
+
+  /accounts/twitter_oauth2/login/:
+    get:
+      tags: [Social]
+      summary: Start Twitter OAuth2 login (redirect)
+      description: |
+        Frontend initiates Twitter (OAuth2) sign-in by calling this django-allauth
+        endpoint. It responds with a 302 redirect to Twitter's OAuth consent screen.
+        After authorization, allauth returns the browser to `/api/social-token/` to
+        convert the authenticated session into JWTs.
+      security: []
+      responses:
+        '302':
+          description: Redirects the browser to Twitter OAuth2 consent
 
 components:
   securitySchemes:

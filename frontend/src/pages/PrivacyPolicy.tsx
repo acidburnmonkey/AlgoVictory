@@ -152,7 +152,7 @@ function PrivacyPolicy() {
                     <Typography variant="body2" color="text.secondary">
                         Depending on your state, you may have rights to request access to or
                         deletion of your personal data. Contact us at
-                        [algovictory.unify491@aleeas.com].
+                        algovictory.unify491@aleeas.com.
                     </Typography>
                 </Section>
 

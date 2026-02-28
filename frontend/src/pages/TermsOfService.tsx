@@ -167,15 +167,15 @@ function TermsOfService() {
                 <Section title="8. Intellectual Property">
                     <Typography variant="body2" color="text.secondary">
                         All content, predictions, branding, and materials are the property
-                        of [Your Website Name]. Unauthorized reproduction or redistribution
-                        is prohibited.
+                        of algovictory.com . Unauthorized reproduction or redistribution is
+                        prohibited.
                     </Typography>
                 </Section>
 
                 <Section title="9. Governing Law">
                     <Typography variant="body2" color="text.secondary">
                         These Terms are governed by the laws of the United States and the
-                        State of [Your State].
+                        State of Florida.
                     </Typography>
                 </Section>
 

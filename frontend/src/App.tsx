@@ -12,6 +12,7 @@ import { Footer, NavBar, ProtectedRoute } from './components';
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import theme from './styles/theme';
 
+
 //register
 function RegisterAndLogout() {
     localStorage.clear();
@@ -22,6 +23,7 @@ function RegisterAndLogout() {
 function App() {
     return (
         <>
+
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <BrowserRouter>
@@ -51,6 +53,7 @@ function App() {
                     </Box>
                 </BrowserRouter>
             </ThemeProvider>
+
         </>
     );
 }

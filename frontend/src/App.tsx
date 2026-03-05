@@ -1,15 +1,17 @@
-import { useState } from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import type { Navigation } from 'react-router-dom';
-import { Home, Login, NotFound, Register, TermsOfService, PrivacyPolicy } from './pages';
-import ProtectedRoute from './components/ProtectedRoute';
-import Leagues from './components/Leagues'; 
+import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
+import {
+    Home,
+    Login,
+    NotFound,
+    PrivacyPolicy,
+    Register,
+    Settings,
+    TermsOfService,
+} from './pages';
+import { Footer, NavBar, ProtectedRoute } from './components';
+import { ThemeProvider, CssBaseline, Box } from '@mui/material';
+import theme from './styles/theme';
 
-//logout
-function Logout() {
-    localStorage.clear();
-    return <Navigate to="/login/" />;
-}
 
 //register
 function RegisterAndLogout() {
@@ -21,18 +23,37 @@ function RegisterAndLogout() {
 function App() {
     return (
         <>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<RegisterAndLogout />} />
-                    <Route path="/leagues" element={ <Leagues /> } />
-                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                    <Route path="/terms-of-service" element={<TermsOfService />} />
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
-            </BrowserRouter>
+
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <BrowserRouter>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                    <NavBar />
+                    <Routes>
+                        {/* Public routes */}
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-of-service" element={<TermsOfService />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<RegisterAndLogout />} />
+                        <Route path="*" element={<NotFound />} />
+
+                        {/* logged in routes */}
+                        <Route
+                            element={
+                                <ProtectedRoute>
+                                    <Outlet />
+                                </ProtectedRoute>
+                            }
+                        >
+                            <Route path="/settings" element={<Settings />} />
+                        </Route>
+                    </Routes>
+                    <Footer />
+                    </Box>
+                </BrowserRouter>
+            </ThemeProvider>
+
         </>
     );
 }

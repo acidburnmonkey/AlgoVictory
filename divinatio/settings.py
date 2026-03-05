@@ -69,6 +69,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'leagues',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.twitter_oauth2',
 ]
 
 SITE_ID = 1

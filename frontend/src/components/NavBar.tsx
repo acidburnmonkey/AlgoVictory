@@ -16,7 +16,6 @@ import {
 import { alpha } from '@mui/material/styles';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
-import AutoGraphRoundedIcon from '@mui/icons-material/AutoGraphRounded';
 
 function NavBar() {
     const { isAuthenticated, user, avatar, logout } = useAuth();
@@ -63,12 +62,10 @@ function NavBar() {
                         gap: 0.8,
                     }}
                 >
-                    <AutoGraphRoundedIcon
-                        sx={{
-                            fontSize: 22,
-                            color: 'primary.main',
-                            WebkitTextFillColor: 'initial',
-                        }}
+                    <img
+                        src="/favico.svg"
+                        alt="logo"
+                        style={{ width: 22, height: 22 }}
                     />
                     AlgoVictory
                 </Typography>

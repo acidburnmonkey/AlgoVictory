@@ -8,28 +8,19 @@ from dotenv import load_dotenv
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from api.serializers import UserInfoSerializer, UserSerializer
+from allauth.account.forms import ResetPasswordForm
+from .dev import API_PORT, get_logger
+from .serializers import UserInfoSerializer, UserSerializer
 
 User = get_user_model()
-
 load_dotenv()
-if os.getenv('production'):
-    REACT_PORT = os.getenv('REACT_PORT')
-    API_PORT = os.getenv('API_PORT')
-    WEBSITE = 'changeme'
-    REDIRECT_URI = 'changeme'
-else:
-    REACT_PORT = 5173
-    API_PORT = 8000
-    REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
 
-logger = logging.getLogger(__name__)
-level = logging.DEBUG
-formatter = " %(levelname)s | %(funcName)s| %(message)s"
-logging.basicConfig(format=formatter, level=level)
+REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
+
+logger = get_logger(__name__)
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -46,7 +37,6 @@ class SocialToken(APIView):
     def get(self, request):
 
         token = RefreshToken.for_user(request.user)
-
         frontend_url = os.getenv('FRONTEND_URL')
 
         logger.debug(frontend_url)
@@ -66,6 +56,6 @@ class SocialToken(APIView):
 class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request: Request) -> Response:
         serializer = UserInfoSerializer(request.user)
         return Response(serializer.data)

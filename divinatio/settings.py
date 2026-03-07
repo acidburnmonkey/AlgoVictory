@@ -43,8 +43,8 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",  # dev
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",   # by default, every api view
-    ],                                                   # requires a token
+        "rest_framework.permissions.IsAuthenticated",  # by default, every api view
+    ],  # requires a token
 }
 
 SIMPLE_JWT = {
@@ -62,15 +62,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'rest_framework',
+    'corsheaders',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'api.apps.ApiConfig',
-    'rest_framework',
-    'corsheaders',
-    'leagues',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.twitter_oauth2',
+    'api.apps.ApiConfig',
+    'leagues',
 ]
 
 SITE_ID = 1
@@ -86,7 +86,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware'
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'divinatio.urls'

@@ -35,49 +35,7 @@ logging.basicConfig(format=formatter, level=level)
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]         # AllowAny: allows everyone to see view
-
-
-'''
-class NoteListCreate(generics.ListCreateAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(author=user)
-
-    def perform_create(self, serializer):
-        if serializer.is_valid():
-            serializer.save(author=self.request.user)
-        else:
-            print(serializer.errors)
-
-
-class NoteDelete(generics.DestroyAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(author=user)
-'''
-
-class ExternalFightersView(APIView):
-    """
-    Proxy endpoint to fetch fighter data from an external API.
-
-    This view forwards query parameters from the client to the external
-    MMA/balldontlie API and returns the JSON response. It uses the
-    EXTERNAL_API_BASE setting (falls back to 'https://mma.balldontlie.io/api/v1').
-
-    Usage: GET /api/external/fighters/?page=1&per_page=10&search=smith
-    """
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        serializer = UserInfoSerializer(request.user)
-        return Response(serializer.data)
+    permission_classes = [AllowAny]  # AllowAny: allows everyone to see view
 
 
 class SocialToken(APIView):
@@ -103,11 +61,11 @@ class SocialToken(APIView):
         logger.debug(params)
 
         return redirect(f'{frontend_url}/home?{params}')
-    
+
 
 class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request):
         serializer = UserInfoSerializer(request.user)
         return Response(serializer.data)

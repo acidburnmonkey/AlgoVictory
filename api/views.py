@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from allauth.account.forms import ResetPasswordForm
 from .dev import API_PORT, get_logger
-from .serializers import UserInfoSerializer, UserSerializer
+from .serializers import PasswordResetSerializer, UserInfoSerializer, UserSerializer
 
 User = get_user_model()
 load_dotenv()
@@ -59,3 +59,22 @@ class UserInfoView(APIView):
     def get(self, request: Request) -> Response:
         serializer = UserInfoSerializer(request.user)
         return Response(serializer.data)
+
+
+class ResetPassworView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = PasswordResetSerializer
+
+    def post(self, request: Request) -> Response:
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)  # catch err auto handled
+
+        mail = serializer.validated_data.get('email')
+        logger.info(mail)
+
+        allauth_form = ResetPasswordForm(data={'email': mail})
+        if allauth_form.is_valid():
+            allauth_form.save(request)
+
+        return Response({'message': 'Passord reset sent'})

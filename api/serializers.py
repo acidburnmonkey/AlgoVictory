@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from allauth.socialaccount.models import SocialAccount
+from .dev import get_logger
 
 User = get_user_model()
+
+logger = get_logger(__name__)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -60,3 +63,19 @@ class UserInfoSerializer(serializers.ModelSerializer):
         social_account = SocialAccount.objects.filter(user=obj).first()
 
         return social_account.provider if social_account else 'local'
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value: str):
+        value = value.strip().lower()
+
+        try:
+            User.objects.get(email=value)
+
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No account found with this email.")
+
+        logger.debug("validated password reset email")
+        return value

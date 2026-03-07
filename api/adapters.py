@@ -11,14 +11,13 @@ logger = get_logger(__name__)
 
 
 class AllauthAdapter(DefaultAccountAdapter):
-    def get_password_reset_url(self, request, key):
-        return f"{FRONTEND_URL}/reset-password/{key}"
-
     def send_mail(self, template_prefix, email, context):
         if 'password_reset_key' not in template_prefix:
             return super().send_mail(template_prefix, email, context)
 
-        reset_url = context.get('password_reset_url', '')
+        key = context.get('key', '')
+        uid = context.get('uid', '')
+        reset_url = f"{FRONTEND_URL}/reset-password/{uid}-{key}"
 
         html_content = f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -53,6 +52,6 @@ class AllauthAdapter(DefaultAccountAdapter):
         try:
             sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
             sg.send(message)
-            logger.info("Email sent")
+            logger.debug(" Password reset Email sent")
         except Exception as e:
             logger.critical(f"Failed to send reset email: {e}")

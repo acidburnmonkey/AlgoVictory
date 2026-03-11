@@ -1,4 +1,3 @@
-import logging
 import os
 
 from django.contrib.auth import get_user_model
@@ -12,8 +11,8 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from allauth.account.forms import ResetPasswordForm
-from .dev import API_PORT, get_logger
-from .serializers import PasswordResetSerializer, UserInfoSerializer, UserSerializer
+from .dev import API_PORT, FRONTEND_URL, get_logger
+from .serializers import EmailSendSerializer, SetPasswordSerializer, UserInfoSerializer, UserSerializer
 
 User = get_user_model()
 load_dotenv()
@@ -37,7 +36,7 @@ class SocialToken(APIView):
     def get(self, request):
 
         token = RefreshToken.for_user(request.user)
-        frontend_url = os.getenv('FRONTEND_URL')
+        frontend_url = FRONTEND_URL
 
         logger.debug(frontend_url)
 
@@ -63,7 +62,7 @@ class UserInfoView(APIView):
 
 class ResetPassworView(APIView):
     permission_classes = [AllowAny]
-    serializer_class = PasswordResetSerializer
+    serializer_class = EmailSendSerializer
 
     def post(self, request: Request) -> Response:
 
@@ -78,3 +77,15 @@ class ResetPassworView(APIView):
             allauth_form.save(request)
 
         return Response({'message': 'Passord reset sent'})
+
+
+class SetNewPasswordView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = SetPasswordSerializer
+
+    def post(self, request: Request):
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)  # catch err auto handled
+
+        return Response({'ok': 'ok'})

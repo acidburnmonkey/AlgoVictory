@@ -1,16 +1,16 @@
-import os
-
+from allauth.account.forms import ResetPasswordForm
+from allauth.account.app_settings import PASSWORD_RESET_TOKEN_GENERATOR
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.utils.http import urlencode
 from dotenv import load_dotenv
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from allauth.account.forms import ResetPasswordForm
+
 from .dev import API_PORT, FRONTEND_URL, get_logger
 from .serializers import EmailSendSerializer, SetPasswordSerializer, UserInfoSerializer, UserSerializer
 
@@ -83,9 +83,21 @@ class SetNewPasswordView(APIView):
     permission_classes = [AllowAny]
     serializer_class = SetPasswordSerializer
 
+    # gets uid, key, password
     def post(self, request: Request):
 
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)  # catch err auto handled
+        serializer.is_valid(raise_exception=True)
 
-        return Response({'ok': 'ok'})
+        password = serializer.validated_data.get('password')
+        user = User.objects.get(pk=serializer.validated_data.get('user_id'))
+        logger.debug(f'changing password for user {user}')
+
+        logger.debug(f"request.key : {request.data.get('key')}")
+
+        if PASSWORD_RESET_TOKEN_GENERATOR().check_token(user, request.data.get('key')):
+            user.set_password(password)
+            user.save()
+            return Response({'ok': 'password changed'}, status=200)
+
+        return Response({'error': 'token expired'}, status=400)

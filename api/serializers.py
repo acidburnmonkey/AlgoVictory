@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.utils.http import urlsafe_base64_decode
+from django.utils.http import base36_to_int
 from rest_framework import serializers
 from allauth.socialaccount.models import SocialAccount
 from .dev import get_logger
@@ -85,6 +85,7 @@ class EmailSendSerializer(serializers.Serializer):
 class SetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, trim_whitespace=True)
     uid = serializers.CharField()
+    key = serializers.CharField(write_only=True)
 
     def validate(self, atrs: dict):  # type: ignore[override]
 
@@ -92,14 +93,14 @@ class SetPasswordSerializer(serializers.Serializer):
         password: str = atrs.get('password', '')
 
         try:
-            user_id = urlsafe_base64_decode(uid).decode()
+            user_id = base36_to_int(uid)
             atrs['user_id'] = user_id
 
         except ValueError:
             logger.error(f'bad uid passed , {uid}')
             raise serializers.ValidationError('Bad uid value passed')
 
-        if len(password) <= 5 or password.isalpha():
+        if len(password) <= 3:
             raise serializers.ValidationError('password too short')
 
         return atrs

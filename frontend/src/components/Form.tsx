@@ -192,6 +192,25 @@ function Form({ route, method }: FormProps) {
                             }}
                         />
 
+                        {isLogin && (
+                            <Typography
+                                component={RouterLink}
+                                to="/reset-password"
+                                variant="caption"
+                                sx={{
+                                    color: 'text.secondary',
+                                    textDecoration: 'none',
+                                    alignSelf: 'flex-end',
+                                    mt: -2,
+                                    '&:hover': {
+                                        color: 'primary.main',
+                                    },
+                                }}
+                            >
+                                Forgot password?
+                            </Typography>
+                        )}
+
                         {!isLogin && (
                             <TextField
                                 fullWidth

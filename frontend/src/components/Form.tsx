@@ -54,7 +54,7 @@ function Form({ route, method }: FormProps) {
 
         const nextUrl = `${API_URL}/api/social-token/`;
         const params = new URLSearchParams({ process: 'login', next: nextUrl });
-        window.location.href = `${API_URL}/accounts/twitter_oauth2/login/?${params.toString()}`;
+        window.location.href = `${API_URL}/accounts/twitter/login/?${params.toString()}`;
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

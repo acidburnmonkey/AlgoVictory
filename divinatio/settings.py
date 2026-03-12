@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.twitter_oauth2',
+    'allauth.socialaccount.providers.twitter',
     'api.apps.ApiConfig',
     'leagues',
 ]
@@ -160,7 +160,8 @@ SOCIALACCOUNT_PROVIDERS = {
             "access_type": "online",
         },
         "VERIFIED_EMAIL": True,
-    }
+    },
+    "twitter": {},
 }
 
 SOCIALACCOUNT_QUERY_EMAIL = True
@@ -174,6 +175,7 @@ DEFAULT_FROM_EMAIL = 'algovictory.unify491@aleeas.com'
 ACCOUNT_ADAPTER = 'api.adapters.AllauthAdapter'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 ACCOUNT_ALLOW_EXTERNAL_REDIRECTS = True
 
 

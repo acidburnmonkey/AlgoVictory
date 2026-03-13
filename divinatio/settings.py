@@ -32,6 +32,8 @@ DEBUG = True
 
 # API key for MMA site
 MMA_API_KEY = os.getenv("MMA_API_KEY")
+# SportsData API key (set this in your environment or .env for dev)
+SPORTS_API_KEY = os.getenv("SPORTS_API_KEY")
 
 ALLOWED_HOSTS = ['*']
 

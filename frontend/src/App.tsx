@@ -8,6 +8,7 @@ import {
     Settings,
     TermsOfService,
 } from './pages';
+import Schedule from './components/Schedule';
 import { Footer, NavBar, ProtectedRoute } from './components';
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import theme from './styles/theme';
@@ -34,6 +35,7 @@ function App() {
                         <Route path="/home" element={<Home />} />
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/terms-of-service" element={<TermsOfService />} />
+                        <Route path="/schedule" element={<Schedule />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<RegisterAndLogout />} />
                         <Route path="*" element={<NotFound />} />

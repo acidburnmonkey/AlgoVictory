@@ -8,6 +8,8 @@ wheels/
 *.sql
 *.sqlite3
 google-secret.json
+*secret*
+*secrets*
 
 # Virtual environments
 .venv

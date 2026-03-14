@@ -13,7 +13,7 @@ from .serializers import EventSerializer
 
 # Create your views here.
 def get_leagues(request):
-    
+
     print("MMA_API_KEY:", bool(getattr(settings, "MMA_API_KEY", None)))
 
     url = "https://api.balldontlie.io/mma/v1/leagues"
@@ -24,19 +24,19 @@ def get_leagues(request):
     }
 
     try:
-    # call external api
+        # call external api
         response = requests.get(url, headers=headers)
-    # throw 400/500
+        # throw 400/500
         response.raise_for_status()
-    # jsonify
+        # jsonify
         data = response.json()
 
         print("RESPONSE:", response.status_code)
         print("RESPONSE TEXT:", response.text)
 
-    #return data to frontend
+        # return data to frontend
         return JsonResponse(data, safe=False)
-    
+
     except requests.exceptions.RequestException as e:
         print("ERROR:", e)
         return JsonResponse(

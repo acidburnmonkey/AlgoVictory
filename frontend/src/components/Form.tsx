@@ -54,7 +54,7 @@ function Form({ route, method }: FormProps) {
 
         const nextUrl = `${API_URL}/api/social-token/`;
         const params = new URLSearchParams({ process: 'login', next: nextUrl });
-        window.location.href = `${API_URL}/accounts/twitter_oauth2/login/?${params.toString()}`;
+        window.location.href = `${API_URL}/accounts/twitter/login/?${params.toString()}`;
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -191,6 +191,25 @@ function Form({ route, method }: FormProps) {
                                 },
                             }}
                         />
+
+                        {isLogin && (
+                            <Typography
+                                component={RouterLink}
+                                to="/reset-password"
+                                variant="caption"
+                                sx={{
+                                    color: 'text.secondary',
+                                    textDecoration: 'none',
+                                    alignSelf: 'flex-end',
+                                    mt: -2,
+                                    '&:hover': {
+                                        color: 'primary.main',
+                                    },
+                                }}
+                            >
+                                Forgot password?
+                            </Typography>
+                        )}
 
                         {!isLogin && (
                             <TextField

@@ -1,83 +1,31 @@
-import logging
-import os
-
+from allauth.account.forms import ResetPasswordForm
+from allauth.account.app_settings import PASSWORD_RESET_TOKEN_GENERATOR
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.utils.http import urlencode
 from dotenv import load_dotenv
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.serializers import UserInfoSerializer, UserSerializer
+from .dev import API_PORT, FRONTEND_URL, get_logger
+from .serializers import EmailSendSerializer, SetPasswordSerializer, UserInfoSerializer, UserSerializer
 
 User = get_user_model()
-
 load_dotenv()
-if os.getenv('production'):
-    REACT_PORT = os.getenv('REACT_PORT')
-    API_PORT = os.getenv('API_PORT')
-    WEBSITE = 'changeme'
-    REDIRECT_URI = 'changeme'
-else:
-    REACT_PORT = 5173
-    API_PORT = 8000
-    REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
 
-logger = logging.getLogger(__name__)
-level = logging.DEBUG
-formatter = " %(levelname)s | %(funcName)s| %(message)s"
-logging.basicConfig(format=formatter, level=level)
+REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
+
+logger = get_logger(__name__)
 
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]         # AllowAny: allows everyone to see view
-
-
-'''
-class NoteListCreate(generics.ListCreateAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(author=user)
-
-    def perform_create(self, serializer):
-        if serializer.is_valid():
-            serializer.save(author=self.request.user)
-        else:
-            print(serializer.errors)
-
-
-class NoteDelete(generics.DestroyAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Note.objects.filter(author=user)
-'''
-
-class ExternalFightersView(APIView):
-    """
-    Proxy endpoint to fetch fighter data from an external API.
-
-    This view forwards query parameters from the client to the external
-    MMA/balldontlie API and returns the JSON response. It uses the
-    EXTERNAL_API_BASE setting (falls back to 'https://mma.balldontlie.io/api/v1').
-
-    Usage: GET /api/external/fighters/?page=1&per_page=10&search=smith
-    """
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        serializer = UserInfoSerializer(request.user)
-        return Response(serializer.data)
+    permission_classes = [AllowAny]  # AllowAny: allows everyone to see view
 
 
 class SocialToken(APIView):
@@ -88,8 +36,7 @@ class SocialToken(APIView):
     def get(self, request):
 
         token = RefreshToken.for_user(request.user)
-
-        frontend_url = os.getenv('FRONTEND_URL')
+        frontend_url = FRONTEND_URL
 
         logger.debug(frontend_url)
 
@@ -103,11 +50,54 @@ class SocialToken(APIView):
         logger.debug(params)
 
         return redirect(f'{frontend_url}/home?{params}')
-    
+
 
 class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
-    
-    def get(self, request):
+
+    def get(self, request: Request) -> Response:
         serializer = UserInfoSerializer(request.user)
         return Response(serializer.data)
+
+
+class ResetPassworView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = EmailSendSerializer
+
+    def post(self, request: Request) -> Response:
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)  # catch err auto handled
+
+        mail = serializer.validated_data.get('email')
+        logger.info(mail)
+
+        allauth_form = ResetPasswordForm(data={'email': mail})
+        if allauth_form.is_valid():
+            allauth_form.save(request)
+
+        return Response({'message': 'Passord reset sent'})
+
+
+class SetNewPasswordView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = SetPasswordSerializer
+
+    # gets uid, key, password
+    def post(self, request: Request):
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        password = serializer.validated_data.get('password')
+        user = User.objects.get(pk=serializer.validated_data.get('user_id'))
+        logger.debug(f'changing password for user {user}')
+
+        logger.debug(f"request.key : {request.data.get('key')}")
+
+        if PASSWORD_RESET_TOKEN_GENERATOR().check_token(user, request.data.get('key')):
+            user.set_password(password)
+            user.save()
+            return Response({'ok': 'password changed'}, status=200)
+
+        return Response({'error': 'token expired'}, status=400)

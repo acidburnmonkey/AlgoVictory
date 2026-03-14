@@ -5,11 +5,9 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
@@ -37,7 +35,12 @@ class Migration(migrations.Migration):
                 ('weightclass', models.CharField(blank=True, max_length=128)),
                 ('raw', models.JSONField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fights', to='leagues.event')),
+                (
+                    'event',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name='fights', to='leagues.event'
+                    ),
+                ),
             ],
         ),
     ]

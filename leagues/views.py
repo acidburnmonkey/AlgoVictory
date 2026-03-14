@@ -42,9 +42,10 @@ def get_leagues(request):
         return JsonResponse(
             {
                 "external_status": response.status_code if 'response' in locals() else None,
-                "external_response": response.text if 'response' in locals() else str(e)
-            }, status=500)
-    
+                "external_response": response.text if 'response' in locals() else str(e),
+            },
+            status=500,
+        )
 
 
 @api_view(['GET'])
@@ -81,15 +82,17 @@ def events_list(request):
     page_obj = paginator.get_page(page)
 
     serializer = EventSerializer(page_obj.object_list, many=True)
-    return Response({
-        'data': serializer.data,
-        'pagination': {
-            'page': page_obj.number,
-            'page_size': page_size,
-            'pages': paginator.num_pages,
-            'total': paginator.count,
+    return Response(
+        {
+            'data': serializer.data,
+            'pagination': {
+                'page': page_obj.number,
+                'page_size': page_size,
+                'pages': paginator.num_pages,
+                'total': paginator.count,
+            },
         }
-    })
+    )
 
 
 @api_view(['GET'])
@@ -115,4 +118,3 @@ def refresh_schedule(request):
         return Response({'created': created, 'updated': updated})
     except Exception as e:
         return Response({'error': str(e)}, status=500)
-

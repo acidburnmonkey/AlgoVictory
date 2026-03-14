@@ -59,7 +59,9 @@ def fetch_and_store_schedule(season: str = '2026') -> Tuple[int, int]:
             updated += 1
 
         # Parse fights if available in known locations
-        fights_list = item.get('Matchups') or item.get('Fights') or item.get('EventFightList') or item.get('MatchupsList') or []
+        fights_list = (
+            item.get('Matchups') or item.get('Fights') or item.get('EventFightList') or item.get('MatchupsList') or []
+        )
         if isinstance(fights_list, dict):
             # sometimes API returns an object with key 'Matchups'
             fights_list = list(fights_list.values())
@@ -85,7 +87,7 @@ def fetch_and_store_schedule(season: str = '2026') -> Tuple[int, int]:
                 if fight_id is None:
                     # try to synthesize a fight id from event+fighters for uniqueness
                     fight_key = f"{ev.external_id}:{fighter1}:{fighter2}"
-                    fight_id = abs(hash(fight_key)) % (10 ** 12)
+                    fight_id = abs(hash(fight_key)) % (10**12)
 
                 Fight.objects.update_or_create(
                     external_id=fight_id,

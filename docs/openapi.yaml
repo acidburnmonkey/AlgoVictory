@@ -15,8 +15,10 @@ tags:
     description: Account creation and JWT lifecycle
   - name: Users
     description: Authenticated user profile access
-  - name: Social
+  - name: Allauth Providers
     description: Social login flow via django-allauth and the subsequent session-to-JWT exchange
+  - name: Leagues
+    description: UFC events, fights, and schedule management
 paths:
   /api/user/register/:
     post:
@@ -134,7 +136,7 @@ paths:
 
   /api/social-token/:
     get:
-      tags: [Social]
+      tags: [Auth, Allauth Providers]
       summary: Exchange a social session for JWTs
       description: |
         `LOGIN_REDIRECT_URL` in Django settings points to this endpoint (`/api/social-token/`).
@@ -163,7 +165,7 @@ paths:
 
   /accounts/google/login/:
     get:
-      tags: [Social]
+      tags: [Auth, Allauth Providers]
       summary: Start Google OAuth2 login (redirect)
       description: |
         Frontend initiates Google sign-in by calling this django-allauth endpoint.
@@ -175,19 +177,19 @@ paths:
         '302':
           description: Redirects the browser to Google OAuth consent
 
-  /accounts/twitter_oauth2/login/:
+  /accounts/twitter/login/:
     get:
-      tags: [Social]
-      summary: Start Twitter OAuth2 login (redirect)
+      tags: [Auth, Allauth Providers]
+      summary: Start Twitter OAuth1 login (redirect)
       description: |
-        Frontend initiates Twitter (OAuth2) sign-in by calling this django-allauth
-        endpoint. It responds with a 302 redirect to Twitter's OAuth consent screen.
+        Frontend initiates Twitter (OAuth1) sign-in by calling this django-allauth
+        endpoint. It responds with a 302 redirect to Twitter's OAuth authorization screen.
         After authorization, allauth returns the browser to `/api/social-token/` to
         convert the authenticated session into JWTs.
       security: []
       responses:
         '302':
-          description: Redirects the browser to Twitter OAuth2 consent
+          description: Redirects the browser to Twitter OAuth1 authorization
 
   /api/reset-password/:
     post:
@@ -262,6 +264,160 @@ paths:
                 required: [ok]
         '400':
           description: Invalid or expired token, or validation error (password too short)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/leagues/:
+    get:
+      tags: [Leagues]
+      summary: Proxy MMA leagues from balldontlie.io
+      description: |
+        Forwards the request to the balldontlie.io MMA API and returns the
+        response as-is. No authentication required.
+      security: []
+      responses:
+        '200':
+          description: League data from external API
+          content:
+            application/json:
+              schema:
+                type: object
+        '502':
+          description: Upstream API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/events/:
+    get:
+      tags: [Leagues]
+      summary: List UFC events
+      description: |
+        Returns a paginated list of UFC events. Supports filtering by
+        `external_id` or upcoming events only.
+      security: []
+      parameters:
+        - name: external_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by a specific external event ID
+        - name: upcoming
+          in: query
+          schema:
+            type: string
+            enum: ['1', 'true', 'yes']
+          description: When set, returns only events with a future date
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            default: 50
+          description: Number of items per page
+      responses:
+        '200':
+          description: Paginated list of events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+                required: [count, page, page_size, results]
+
+  /api/events/{external_id}/:
+    get:
+      tags: [Leagues]
+      summary: Get a single UFC event with fights
+      description: Returns an event by its external ID, including all nested fights.
+      security: []
+      parameters:
+        - name: external_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event with fights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/events/refresh/:
+    post:
+      tags: [Leagues]
+      summary: Refresh UFC schedule from SportsData.io
+      description: |
+        Admin-only endpoint that fetches the UFC schedule from the SportsData.io
+        API and creates or updates Event and Fight records in the database.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                season:
+                  type: string
+                  default: '2026'
+                  description: Season year to fetch
+            examples:
+              default:
+                value:
+                  season: '2026'
+      responses:
+        '200':
+          description: Schedule refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  created:
+                    type: integer
+                  updated:
+                    type: integer
+                required: [created, updated]
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not an admin user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Upstream API error
           content:
             application/json:
               schema:
@@ -384,6 +540,42 @@ components:
           format: password
           minLength: 4
           description: New password (must be longer than 3 characters)
+
+    Event:
+      type: object
+      properties:
+        external_id:
+          type: integer
+        name:
+          type: string
+        date:
+          type: string
+          format: date-time
+          nullable: true
+        raw:
+          type: object
+          description: Complete raw API response data
+        fights:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fight'
+      required: [external_id, name, fights]
+
+    Fight:
+      type: object
+      properties:
+        external_id:
+          type: integer
+        fighter1:
+          type: string
+        fighter2:
+          type: string
+        weightclass:
+          type: string
+        raw:
+          type: object
+          description: Complete raw API response data
+      required: [external_id, fighter1, fighter2]
 
     Error:
       type: object

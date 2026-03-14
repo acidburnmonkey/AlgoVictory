@@ -1,18 +1,16 @@
-import {
-    Container,
-    Typography,
-    Paper,
-    Box,
-    Divider,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-} from '@mui/material';
-import {
-    FiberManualRecord as BulletIcon,
-    Shield as ShieldIcon,
-} from '@mui/icons-material';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import FiberManualRecord from '@mui/icons-material/FiberManualRecord';
+import Shield from '@mui/icons-material/Shield';
+const BulletIcon = FiberManualRecord;
+const ShieldIcon = Shield;
 
 function Section({
     title,

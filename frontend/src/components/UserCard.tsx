@@ -1,4 +1,9 @@
-import { Box, Stack, Avatar, Typography, Chip, Divider } from '@mui/material';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
 import { alpha } from '@mui/material/styles';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';

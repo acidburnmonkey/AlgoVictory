@@ -1,11 +1,9 @@
-import {
-    Box,
-    Container,
-    Divider,
-    Link,
-    Stack,
-    Typography,
-} from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
 

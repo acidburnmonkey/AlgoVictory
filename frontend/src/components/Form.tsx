@@ -2,22 +2,22 @@ import React, { useState } from 'react';
 import api from '../api';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import {
-    Box,
-    Button,
-    CircularProgress,
-    Divider,
-    InputAdornment,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Collapse from '@mui/material/Collapse';
+import Divider from '@mui/material/Divider';
+import InputAdornment from '@mui/material/InputAdornment';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import GoogleIcon from '@mui/icons-material/Google';
-import { Twitter } from '@mui/icons-material';
+import Twitter from '@mui/icons-material/Twitter';
 
 type FormProps = {
     route: string;
@@ -31,6 +31,7 @@ function Form({ route, method }: FormProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -59,8 +60,9 @@ function Form({ route, method }: FormProps) {
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        setLoading(true);
         e.preventDefault();
+        setLoading(true);
+        setError('');
 
         try {
             const response = await api.post(route, { username, password, email });
@@ -71,8 +73,12 @@ function Form({ route, method }: FormProps) {
             } else {
                 navigate('/login');
             }
-        } catch (err) {
-            alert(err);
+        } catch {
+            setError(
+                isLogin
+                    ? 'Invalid username or password.'
+                    : 'Registration failed. Please try again.',
+            );
         } finally {
             setLoading(false);
         }
@@ -151,6 +157,16 @@ function Form({ route, method }: FormProps) {
                         >
                             {isLogin ? 'Sign in to continue' : 'Join us to get started'}
                         </Typography>
+
+                        <Collapse in={!!error} sx={{ width: '100%' }}>
+                            <Alert
+                                severity="error"
+                                variant="outlined"
+                                onClose={() => setError('')}
+                            >
+                                {error}
+                            </Alert>
+                        </Collapse>
 
                         <TextField
                             fullWidth

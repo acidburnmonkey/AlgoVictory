@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import {
-    AppBar,
-    Avatar,
-    Box,
-    Button,
-    ListItemIcon,
-    ListItemText,
-    Menu,
-    MenuItem,
-    Toolbar,
-    Typography,
-} from '@mui/material';
+import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
@@ -62,11 +60,7 @@ function NavBar() {
                         gap: 0.8,
                     }}
                 >
-                    <img
-                        src="/favico.svg"
-                        alt="logo"
-                        style={{ width: 22, height: 22 }}
-                    />
+                    <img src="/logo.svg" alt="logo" style={{ width: 22, height: 22 }} />
                     AlgoVictory
                 </Typography>
 

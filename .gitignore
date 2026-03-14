@@ -5,6 +5,7 @@ build/
 dist/
 wheels/
 *.egg-info
+.cl*
 *.sql
 *.sqlite3
 google-secret.json

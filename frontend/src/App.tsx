@@ -9,6 +9,7 @@ import {
     Settings,
     TermsOfService,
 } from './pages';
+import Schedule from './components/Schedule';
 import { Footer, NavBar, ProtectedRoute } from './components';
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import theme from './styles/theme';

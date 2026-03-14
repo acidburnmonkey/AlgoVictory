@@ -14,6 +14,10 @@ function Home() {
             login(access, refresh);
             window.history.replaceState({}, '', '/home');
         }
+
+        console.log('onLoad');
+        console.log('isAuthenticated', isAuthenticated);
+        console.log('user', user);
     }, []);
 
     return (

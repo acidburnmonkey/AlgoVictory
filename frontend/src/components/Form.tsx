@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import api from '../api';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
+import { useAuth } from './AuthContext';
 import {
     Box,
     Button,
@@ -32,6 +32,7 @@ function Form({ route, method }: FormProps) {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const isLogin = method === 'login';
 
@@ -64,9 +65,8 @@ function Form({ route, method }: FormProps) {
         try {
             const response = await api.post(route, { username, password, email });
 
-            if (isLogin) {
-                localStorage.setItem(ACCESS_TOKEN, response.data.access);
-                localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+            if (isLogin && response.status === 200) {
+                login(response.data.access, response.data.refresh);
                 navigate('/home');
             } else {
                 navigate('/login');

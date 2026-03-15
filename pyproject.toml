@@ -25,4 +25,11 @@ dependencies = [
     "sendgrid>=6.12.5",
     "setuptools>=81.0.0",
     "sqlparse>=0.5.3",
+    "stripe>=14.4.1",
 ]
+
+[tool.django-stubs]
+django_settings_module = "divinatio.settings"
+
+[tool.pyright]
+pythonVersion = "3.14"

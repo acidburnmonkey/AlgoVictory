@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.twitter',
     'api.apps.ApiConfig',
     'leagues',
+    'payments.apps.PaymentsConfig',
 ]
 
 SITE_ID = 1

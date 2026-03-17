@@ -1,17 +1,20 @@
 import os
+from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 
 import stripe
-from django.contrib.auth import get_user_model
+from typing import cast
+
+from api.models import User
 from dotenv import load_dotenv
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.dev import SERVER_URL, get_logger
+from api.dev import FRONTEND_URL, STRIPE_WEBHOOK_SECRET, get_logger
 
-User = get_user_model()
+
 load_dotenv()
 logger = get_logger(__name__)
 
@@ -23,7 +26,8 @@ class PayStripe(APIView):
 
     def post(self, request: Request):
 
-        email = request.user.email or ''  # pyright: ignore
+        user = cast(User, request.user)
+        email = user.email or ''
 
         try:
             session = stripe.checkout.Session.create(
@@ -41,8 +45,9 @@ class PayStripe(APIView):
                     }
                 ],
                 mode='payment',
-                success_url=f'{SERVER_URL}/payments/success/',
-                cancel_url=f'{SERVER_URL}/payments/cancel/',
+                metadata={"user_id": user.id},  # pyright: ignore
+                success_url=f'{FRONTEND_URL}/payments/success/',
+                cancel_url=f'{FRONTEND_URL}/payments/cancel/',
             )
 
             return Response({'url': session.url})
@@ -53,13 +58,34 @@ class PayStripe(APIView):
         return Response({'error': "stripe payment failed"})
 
 
-class SuccessPayment(APIView):
-    permission_classes = [IsAuthenticated]
-    pass
+class StripeWebHook(APIView):
+    permission_classes = [AllowAny]
 
+    def post(self, request: Request) -> Response:
 
-class CancelledPayment(APIView):
-    permission_classes = [IsAuthenticated]
+        logger.debug("Stripe Webhook triggred")
 
-    def get(self, request: Request) -> Response:
-        return Response({'status': 'cancelled'})
+        payload = request.body
+        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+
+        try:
+            event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+        except ValueError:
+            logger.error("Invalid payload from Stripe")
+            return Response(status=400)
+        except stripe.StripeError:
+            logger.error("StripeError")
+            return Response(status=400)
+
+        if event['type'] == 'checkout.session.completed':
+            session = event['data']['object']
+            user_id = session['metadata']['user_id']
+
+            user = User.objects.get(id=user_id)
+            user.premium = True
+            user.payment_date = timezone.now()
+            user.payment_expires = timezone.now() + relativedelta(months=1)
+            user.save(update_fields=['premium', 'payment_date', 'payment_expires'])
+            logger.info(f'user {user.username} made a payment via Stripe')
+
+        return Response(status=200)

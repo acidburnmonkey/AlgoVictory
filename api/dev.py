@@ -9,11 +9,13 @@ if os.getenv('production'):
     API_PORT = os.getenv('API_PORT')
     FRONTEND_URL = os.getenv('FRONTEND_URL')
     SERVER_URL = os.getenv('SERVER_URL')
+    STRIPE_WEBHOOK_SECRET = os.getenv('')
 else:
     REACT_PORT = 5173
     API_PORT = 8000
     FRONTEND_URL = 'http://127.0.0.1:5173'
     SERVER_URL = 'http://127.0.0.1:8000'
+    STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 
 def get_logger(name: str) -> logging.Logger:

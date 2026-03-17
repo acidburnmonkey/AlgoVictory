@@ -1,13 +1,21 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-User = get_user_model()
+from api.models import User
 
 
 class UserAdmin(BaseUserAdmin):
     # Fields to display in the user list
-    list_display = ('username', 'email', 'is_staff', 'is_active')
+    list_display = ('username', 'email', 'is_staff', 'is_active', 'premium', 'payment_date', 'payment_expires')
+
+    fieldsets = BaseUserAdmin.fieldsets + (  # type: ignore[operator]
+        (
+            'Premium Info',
+            {
+                'fields': ('premium', 'payment_date', 'payment_expires'),
+            },
+        ),
+    )
 
     # Fields to include when creating a new user
     add_fieldsets = (

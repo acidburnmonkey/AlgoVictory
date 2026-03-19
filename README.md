@@ -7,7 +7,7 @@
 Test stripe
 
 ```bash
-stripe listen --forward-to http://127.0.0.1:5173/payment/success/
+stripe listen --forward-to 127.0.0.1:8000/payments/stripe-webhook/
 ```
 
 ```bash

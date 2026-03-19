@@ -9,6 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import theme from './styles/theme';
 
 const PasswordReset = lazy(() => import('./pages/PasswordReset'));
+const PaymentResponse = lazy(() => import('./components/PaymentResponse'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const Settings = lazy(() => import('./pages/Settings'));
@@ -52,10 +53,7 @@ function App() {
                                 {/* Public routes */}
                                 <Route path="/home" element={<Home />} />
                                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                                <Route
-                                    path="/terms-of-service"
-                                    element={<TermsOfService />}
-                                />
+                                <Route path="/terms-of-service" element={<TermsOfService />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/register" element={<RegisterAndLogout />} />
                                 <Route path="*" element={<NotFound />} />
@@ -77,6 +75,14 @@ function App() {
                                     }
                                 >
                                     <Route path="/settings" element={<Settings />} />
+                                    <Route
+                                        path="/payments/success"
+                                        element={<PaymentResponse status="success" />}
+                                    />
+                                    <Route
+                                        path="/payments/cancel"
+                                        element={<PaymentResponse status="cancel" />}
+                                    />
                                 </Route>
                             </Routes>
                         </Suspense>

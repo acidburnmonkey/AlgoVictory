@@ -14,6 +14,7 @@ import type { userInfo } from '../interfaces';
 
 interface AuthContextType {
     isAuthenticated: boolean | null;
+    isPremium: boolean | null;
     user: string | null;
     avatar: string | null;
     login: (access: string, refresh: string) => void;
@@ -24,6 +25,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    const [isPremium, setIsPremium] = useState<boolean | null>(null);
     const [user, setUser] = useState<string | null>(null);
     const [avatar, setAvatar] = useState<string | null>(null);
 
@@ -82,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 const data: userInfo = response.data;
                 setUser(data.username);
                 setAvatar(data.avatar);
+                setIsPremium(data.premium);
             }
         } catch (err) {
             console.log('err', err);
@@ -102,7 +105,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, avatar, login, logout }}>
+        <AuthContext.Provider
+            value={{ isAuthenticated, user, avatar, login, logout, isPremium }}
+        >
             {children}
         </AuthContext.Provider>
     );

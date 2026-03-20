@@ -1,12 +1,18 @@
-from django.contrib.auth import get_user_model
 from django.utils.http import base36_to_int
 from rest_framework import serializers
 from allauth.socialaccount.models import SocialAccount
 from .dev import get_logger
-
-User = get_user_model()
+from .models import User
+from typing import TypedDict
 
 logger = get_logger(__name__)
+
+
+class TypeUserPasswordReset(TypedDict, total=False):
+    password: str
+    uid: str
+    key: str
+    user_id: int
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -32,6 +38,8 @@ class UserSerializer(serializers.ModelSerializer):
 class UserInfoSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
     provider = serializers.SerializerMethodField()
+    payment_date = serializers.SerializerMethodField()
+    payment_expires = serializers.SerializerMethodField()
 
     class Meta:  # pyright: ignore
         model = User
@@ -49,7 +57,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
             'payment_expires',
         ]
 
-    def get_avatar(self, obj):
+    def get_avatar(self, obj: User) -> str | None:
         social_account = SocialAccount.objects.filter(user=obj).first()
 
         if social_account and social_account.extra_data:
@@ -61,16 +69,28 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
         return None
 
-    def get_provider(self, obj):
+    def get_provider(self, obj: User) -> str | None:
         social_account = SocialAccount.objects.filter(user=obj).first()
 
         return social_account.provider if social_account else 'local'
+
+    def get_payment_date(self, obj: User) -> str | None:
+
+        if obj.payment_date:
+            return obj.payment_date.strftime("%I:%M%p %b %d, %Y")
+        return
+
+    def get_payment_expires(self, obj: User) -> str | None:
+
+        if obj.payment_expires:
+            return obj.payment_expires.strftime("%I:%M%p %b %d, %Y")
+        return
 
 
 class EmailSendSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
-    def validate_email(self, value: str):
+    def validate_email(self, value: str) -> str:
         value = value.strip().lower()
 
         try:
@@ -88,7 +108,7 @@ class SetPasswordSerializer(serializers.Serializer):
     uid = serializers.CharField()
     key = serializers.CharField(write_only=True)
 
-    def validate(self, atrs: dict):  # type: ignore[override]
+    def validate(self, atrs: TypeUserPasswordReset) -> TypeUserPasswordReset:  # type: ignore[override]
 
         uid = atrs.get('uid', '')
         password: str = atrs.get('password', '')

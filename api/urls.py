@@ -4,6 +4,6 @@ from . import views
 urlpatterns = [
     path('user-info/', views.UserInfoView.as_view(), name='user-info'),
     path('social-token/', views.SocialToken.as_view(), name='social-get-jwt'),
-    path('reset-password/', views.ResetPassworView.as_view(), name='send-reset-email'),
+    path('reset-password/', views.ResetPasswordView.as_view(), name='send-reset-email'),
     path('set-password/', views.SetNewPasswordView.as_view(), name='reset-password'),
 ]

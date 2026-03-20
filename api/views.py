@@ -1,9 +1,9 @@
-from allauth.account.forms import ResetPasswordForm
 from allauth.account.app_settings import PASSWORD_RESET_TOKEN_GENERATOR
-from django.contrib.auth import get_user_model
+from allauth.account.forms import ResetPasswordForm
 from django.shortcuts import redirect
 from django.utils.http import urlencode
 from dotenv import load_dotenv
+from .models import User
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
@@ -14,7 +14,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .dev import API_PORT, FRONTEND_URL, get_logger
 from .serializers import EmailSendSerializer, SetPasswordSerializer, UserInfoSerializer, UserSerializer
 
-User = get_user_model()
 load_dotenv()
 
 REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
@@ -36,9 +35,6 @@ class SocialToken(APIView):
     def get(self, request):
 
         token = RefreshToken.for_user(request.user)
-        frontend_url = FRONTEND_URL
-
-        logger.debug(frontend_url)
 
         params = urlencode(
             {
@@ -49,7 +45,7 @@ class SocialToken(APIView):
 
         logger.debug(params)
 
-        return redirect(f'{frontend_url}/home?{params}')
+        return redirect(f'{FRONTEND_URL}/home?{params}')
 
 
 class UserInfoView(APIView):
@@ -57,10 +53,12 @@ class UserInfoView(APIView):
 
     def get(self, request: Request) -> Response:
         serializer = UserInfoSerializer(request.user)
+        logger.debug(f"UserInfoView :{serializer.data}")
+
         return Response(serializer.data)
 
 
-class ResetPassworView(APIView):
+class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
     serializer_class = EmailSendSerializer
 

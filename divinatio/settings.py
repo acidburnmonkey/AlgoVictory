@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'leagues',
     'payments.apps.PaymentsConfig',
-    'sports.SportsConfig',
+    'sports.apps.SportsConfig',
 ]
 
 SITE_ID = 1

@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
 import { Home, Login, Register, NotFound } from './pages';
-import { Footer, NavBar, ProtectedRoute } from './components';
+import { Footer, NavBar, ProtectedRoute, LogedInLock } from './components';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -52,10 +52,9 @@ function App() {
                             <Routes>
                                 {/* Public routes */}
                                 <Route path="/home" element={<Home />} />
+                                <Route path="/" element={<Home />} />
                                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                 <Route path="/terms-of-service" element={<TermsOfService />} />
-                                <Route path="/login" element={<Login />} />
-                                <Route path="/register" element={<RegisterAndLogout />} />
                                 <Route path="*" element={<NotFound />} />
                                 <Route
                                     path="/reset-password"
@@ -65,6 +64,17 @@ function App() {
                                     path="/reset-password/:token"
                                     element={<PasswordReset method="setNewPassword" />}
                                 />
+                                {/*  Logged in Lock */}
+                                <Route
+                                    element={
+                                        <LogedInLock>
+                                            <Outlet />
+                                        </LogedInLock>
+                                    }
+                                >
+                                    <Route path="/login" element={<Login />} />
+                                    <Route path="/register" element={<RegisterAndLogout />} />
+                                </Route>
 
                                 {/* logged in routes */}
                                 <Route

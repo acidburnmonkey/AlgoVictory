@@ -19,6 +19,8 @@ tags:
     description: Social login flow via django-allauth and the subsequent session-to-JWT exchange
   - name: Leagues
     description: UFC events, fights, and schedule management
+  - name: Payments
+    description: Stripe checkout and webhook for premium membership
 paths:
   /api/user/register/:
     post:
@@ -368,6 +370,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /payments/stripe-pay/:
+    post:
+      tags: [Payments]
+      summary: Create a Stripe checkout session
+      description: |
+        Creates a Stripe Checkout Session for a one-time $5.00 USD membership
+        payment. On success, Stripe redirects the user to
+        `FRONTEND_URL/payments/success/`; on cancel, to
+        `FRONTEND_URL/payments/cancel/`. The session `metadata` carries the
+        authenticated user's ID so the webhook can upgrade the account.
+      responses:
+        '200':
+          description: Checkout session URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: Stripe-hosted checkout URL the client should redirect to
+                required: [url]
+              examples:
+                default:
+                  value:
+                    url: https://checkout.stripe.com/pay/cs_test_...
+        '200 (error)':
+          description: Stripe authentication failure (API key missing/invalid)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required: [error]
+        '401':
+          description: Missing or invalid JWT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /payments/stripe-webhook/:
+    post:
+      tags: [Payments]
+      summary: Stripe webhook receiver
+      description: |
+        Receives signed webhook events from Stripe. The signature is verified
+        using the `Stripe-Signature` header and `STRIPE_WEBHOOK_SECRET`.
+
+        On a `checkout.session.completed` event the user identified by
+        `session.metadata.user_id` is upgraded to premium:
+        - `premium` → `true`
+        - `payment_date` → current UTC timestamp
+        - `payment_expires` → `payment_date + 1 month`
+
+        Any other event type is silently acknowledged with 200.
+      security: []
+      parameters:
+        - name: Stripe-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: HMAC signature provided by Stripe for payload verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Raw Stripe event object (see Stripe docs)
+      responses:
+        '200':
+          description: Event acknowledged
+        '400':
+          description: Invalid payload or signature verification failed
 
   /api/events/refresh/:
     post:

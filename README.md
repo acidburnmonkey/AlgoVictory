@@ -1,6 +1,6 @@
 # OpenAPI Documentation
 
-[scalar](https://registry.scalar.com/@algo/apis/algovictory-api@0.1.0)
+[scalar](https://registry.scalar.com/@algo/apis/algovictory-api@latest)
 
 # Payments
 

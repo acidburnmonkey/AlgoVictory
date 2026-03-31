@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'rest_framework',
     'corsheaders',
+    'django_apscheduler',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

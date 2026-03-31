@@ -2,7 +2,7 @@
 import os
 import pprint
 from datetime import datetime
-from interfaces import TypeScheduleResponse
+from .interfaces import TypeScheduleResponse
 
 import requests
 from dotenv import load_dotenv
@@ -38,4 +38,5 @@ def fetch_schedules() -> list[TypeScheduleResponse] | None:
     return filered_events
 
 
-fetch_schedules()
+if __name__ == '__main__':
+    fetch_schedules()

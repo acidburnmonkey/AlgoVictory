@@ -6,3 +6,4 @@ export { default as Footer } from './Footer';
 export { default as PaymentResponse } from './PaymentResponse';
 export { default as LogedInLock } from './LogedInLock';
 export { default as EventCard } from './EventCard';
+export { default as ConstructionBanner } from './ConstructionBanner';

@@ -1,16 +1,15 @@
 from dotenv import load_dotenv
 from rest_framework import generics
-
-from sports.models import UpcomingEvents
-from sports.serializers import UpcomingEventsSerializer
-
-# from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.dev import get_logger
+from sports.interfaces import TypeScheduleResponse
+from sports.models import UpcomingEvents
+from sports.serializers import UpcomingEventsSerializer
+
 from .fetcher import fetch_schedules
 
 load_dotenv()
@@ -24,7 +23,8 @@ class trigger_fetcher(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request: Request) -> Response:
-        events = fetch_schedules()
+
+        events: list[TypeScheduleResponse] | None = fetch_schedules()
 
         if not events:
             return Response({'error': 'Failed to fetch events'}, status=400)
@@ -51,6 +51,9 @@ class trigger_fetcher(APIView):
                 serializer.save()
                 saved.append(serializer.data)
                 logger.info(f'saved ok : {data}')
+
+            elif serializer.errors.get('eventId'):
+                pass
 
             else:
                 errors.append(serializer.errors)

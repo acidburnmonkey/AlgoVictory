@@ -43,27 +43,43 @@ function NavBar() {
     return (
         <AppBar position="sticky" elevation={0}>
             <Toolbar sx={{ justifyContent: 'space-between', px: { xs: 2, sm: 3 } }}>
-                {/* Left — Home */}
-                <Typography
-                    component={RouterLink}
-                    to="/home"
-                    variant="h6"
-                    sx={{
-                        textDecoration: 'none',
-                        fontWeight: 700,
-                        background:
-                            'linear-gradient(135deg, #FFD54F 0%, #FFB300 50%, #FF8F00 100%)',
-                        backgroundClip: 'text',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 0.8,
-                    }}
-                >
-                    <img src="/logo.svg" alt="logo" style={{ width: 22, height: 22 }} />
-                    AlgoVictory
-                </Typography>
+                {/* Left — Home + Nav links */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Typography
+                        component={RouterLink}
+                        to="/home"
+                        variant="h6"
+                        sx={{
+                            textDecoration: 'none',
+                            fontWeight: 700,
+                            background:
+                                'linear-gradient(135deg, #FFD54F 0%, #FFB300 50%, #FF8F00 100%)',
+                            backgroundClip: 'text',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 0.8,
+                        }}
+                    >
+                        <img src="/logo.svg" alt="logo" style={{ width: 22, height: 22 }} />
+                        AlgoVictory
+                    </Typography>
+                    <Button
+                        component={RouterLink}
+                        to="/events"
+                        variant="text"
+                        sx={{
+                            color: 'text.primary',
+                            '&:hover': {
+                                color: 'primary.main',
+                                background: (t) => alpha(t.palette.primary.main, 0.08),
+                            },
+                        }}
+                    >
+                        Events
+                    </Button>
+                </Box>
 
                 {/* Right — Auth buttons or Avatar */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

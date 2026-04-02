@@ -6,7 +6,7 @@ class UpcomingEvents(models.Model):
     active = models.BooleanField()
     dateTime = models.DateTimeField()
     day = models.DateTimeField()
-    eventId = models.IntegerField()
+    eventId = models.IntegerField(unique=True)
     leagueId = models.IntegerField()
     name = models.TextField()
     season = models.IntegerField()

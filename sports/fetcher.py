@@ -34,7 +34,6 @@ def fetch_schedules() -> list[TypeScheduleResponse] | None:
         if datetime.fromisoformat(event.get('DateTime')) > today and 'Fight Night' not in event.get('Name'):
             filered_events.append(event)
 
-    pprint.pprint(filered_events, indent=4)
     return filered_events
 
 

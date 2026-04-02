@@ -5,3 +5,4 @@ export { default as NavBar } from './NavBar';
 export { default as Footer } from './Footer';
 export { default as PaymentResponse } from './PaymentResponse';
 export { default as LogedInLock } from './LogedInLock';
+export { default as EventCard } from './EventCard';

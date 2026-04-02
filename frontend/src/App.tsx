@@ -51,8 +51,8 @@ function App() {
                         >
                             <Routes>
                                 {/* Public routes */}
-                                <Route path="/home" element={<Home />} />
                                 <Route path="/" element={<Home />} />
+                                <Route path="/home" element={<Home />} />
                                 <Route path="/events" element={<Events />} />
                                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                 <Route path="/terms-of-service" element={<TermsOfService />} />

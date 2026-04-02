@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
-import { Home, Login, Register, NotFound } from './pages';
+import { Home, Login, Register, NotFound, Events } from './pages';
 import { Footer, NavBar, ProtectedRoute, LogedInLock } from './components';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -53,6 +53,7 @@ function App() {
                                 {/* Public routes */}
                                 <Route path="/home" element={<Home />} />
                                 <Route path="/" element={<Home />} />
+                                <Route path="/events" element={<Events />} />
                                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                 <Route path="/terms-of-service" element={<TermsOfService />} />
                                 <Route path="*" element={<NotFound />} />

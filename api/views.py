@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]  # AllowAny: allows everyone to see view
+    permission_classes = [AllowAny]
 
 
 class SocialToken(APIView):

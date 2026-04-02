@@ -1,3 +1,14 @@
 from django.db import models
 
-# Create your models here.
+
+class UpcomingEvents(models.Model):
+    id: int
+    active = models.BooleanField()
+    dateTime = models.DateTimeField()
+    day = models.DateTimeField()
+    eventId = models.IntegerField(unique=True)
+    leagueId = models.IntegerField()
+    name = models.TextField()
+    season = models.IntegerField()
+    shortName = models.TextField()
+    status = models.TextField()

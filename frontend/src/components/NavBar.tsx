@@ -173,7 +173,7 @@ function NavBar() {
                                             WebkitBackdropFilter: 'blur(20px) saturate(180%)',
                                             border: (t) =>
                                                 `1px solid ${alpha(t.palette.primary.main, 0.15)}`,
-                                            boxShadow: (t) => `0 8px 32px ${alpha('#000', 0.5)}`,
+                                            boxShadow: `0 8px 32px ${alpha('#000', 0.5)}`,
                                         },
                                     },
                                 }}

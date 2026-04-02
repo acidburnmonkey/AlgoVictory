@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAuth } from '../components/AuthContext';
-import { Link } from 'react-router-dom';
+import HomePublic from './HomePublic';
 
 function Home() {
     const { isAuthenticated, login, user } = useAuth();
@@ -14,31 +14,16 @@ function Home() {
             login(access, refresh);
             window.history.replaceState({}, '', '/home');
         }
-
-        console.log('onLoad');
-        console.log('isAuthenticated', isAuthenticated);
-        console.log('user', user);
     }, []);
+
+    if (isAuthenticated === null) return null;
+
+    if (!isAuthenticated) return <HomePublic />;
 
     return (
         <div>
             <h1>Home</h1>
-            <div>
-                {isAuthenticated ? (
-                    <h2> You are authenticated as {user}</h2>
-                ) : (
-                    <h2> You are NOT authenticated </h2>
-                )}
-            </div>
-            <div>
-                <nav>
-                    <Link to="/home">| Home |</Link>
-                    <Link to="/login">| login |</Link>
-                    <Link to="/register">| Register |</Link>
-                    <Link to="/terms-of-service">| terms-of-service |</Link>
-                    <Link to="/privacy-policy">| privacy-policy |</Link>
-                </nav>
-            </div>
+            <h2>You are authenticated as {user}</h2>
         </div>
     );
 }

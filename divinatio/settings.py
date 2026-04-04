@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'leagues',
     'payments.apps.PaymentsConfig',
     'sports.apps.SportsConfig',
+    'divinatio.apps.AlgoVictoryConfig',
 ]
 
 SITE_ID = 1
@@ -136,6 +137,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "api.User"
 
+# app scheduler
+# https://pypi.org/project/django-apscheduler/
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 60
 
 # ALLAUTH settings
 # social auth , google

@@ -14,9 +14,6 @@ SECRET_KEY = 'django-insecure-6uj=5$eha)16v(-xleylct%vpcqhc36rrpuuiygqjq2x#zvk8(
 
 DEBUG = True
 
-# API key for MMA site
-MMA_API_KEY = os.getenv("MMA_API_KEY")
-
 
 ALLOWED_HOSTS = ['*']
 
@@ -55,7 +52,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.twitter',
     'api.apps.ApiConfig',
-    'leagues',
     'payments.apps.PaymentsConfig',
     'sports.apps.SportsConfig',
     'divinatio.apps.AlgoVictoryConfig',

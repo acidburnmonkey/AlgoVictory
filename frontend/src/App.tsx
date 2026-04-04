@@ -1,7 +1,13 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
 import { Home, Login, Register, NotFound, Events } from './pages';
-import { Footer, NavBar, ProtectedRoute, LogedInLock, ConstructionBanner } from './components';
+import {
+    Footer,
+    NavBar,
+    ProtectedRoute,
+    LogedInLock,
+    ConstructionBanner,
+} from './components';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';

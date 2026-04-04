@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from api.dev import get_logger
 from sports.interfaces import TypeScheduleResponse
-from sports.models import UpcomingEvents
+from sports.models import UpcomingEventsModel
 from sports.serializers import UpcomingEventsSerializer
 
 from .fetcher import fetch_schedules
@@ -15,6 +15,9 @@ from .fetcher import fetch_schedules
 load_dotenv()
 
 logger = get_logger(__name__)
+
+# event = UpcomingEventsModel.objects.get(event_id=286)
+# fighters = Fighter.objects.filter(fights__event=event).distinct()
 
 
 # temp needs to be moved to scheduler
@@ -67,5 +70,5 @@ class trigger_fetcher(APIView):
 
 class ShowAllEventsView(generics.ListAPIView):
     serializer_class = UpcomingEventsSerializer
-    queryset = UpcomingEvents.objects.all()
+    queryset = UpcomingEventsModel.objects.all()
     permission_classes = [AllowAny]

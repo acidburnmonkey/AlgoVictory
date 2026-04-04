@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from api.dev import get_logger
-from .models import UpcomingEvents
-from datetime import datetime
+from .models import UpcomingEventsModel
 # from typing import TypedDict
 
 logger = get_logger(__name__)
@@ -12,7 +11,7 @@ class UpcomingEventsSerializer(serializers.ModelSerializer):
     day = serializers.DateTimeField(format='%B %d, %Y')
 
     class Meta:  # pyright: ignore
-        model = UpcomingEvents
+        model = UpcomingEventsModel
         fields = [
             'id',
             'active',

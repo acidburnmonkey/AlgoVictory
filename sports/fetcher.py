@@ -1,6 +1,6 @@
 # from api.dev import SPORTS_API_KEY
 import os
-import pprint
+from pprint import pprint
 from datetime import datetime
 from .interfaces import TypeScheduleResponse
 
@@ -37,5 +37,29 @@ def fetch_schedules() -> list[TypeScheduleResponse] | None:
     return filered_events
 
 
+# needs event id
+def get_figters_id(id: int) -> tuple[int, int] | None:
+
+    try:
+        url = f'https://api.sportsdata.io/v3/mma/scores/json/Event/{id}'
+        res = requests.get(url, params={'key': key})
+
+        if res.status_code != 200:
+            raise ValueError
+
+        fight_chunk = res.json()
+
+        # pprint(fight_chunk['Fights'][0].get('Fighters'))
+
+        f1 = fight_chunk['Fights'][0].get('Fighters')[0].get('FighterId')
+        f2 = fight_chunk['Fights'][0].get('Fighters')[1].get('FighterId')
+
+    except (Exception, ValueError) as e:
+        print("error", e)
+        return
+
+    return (f1, f2)
+
+
 if __name__ == '__main__':
-    fetch_schedules()
+    get_figters_id(903)

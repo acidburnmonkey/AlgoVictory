@@ -74,7 +74,7 @@ function UserCard(props: userInfo) {
                 >
                     <Avatar
                         alt={props.username}
-                        src={props.avatar}
+                        src={props.avatar ?? undefined}
                         sx={{
                             width: 90,
                             height: 90,

@@ -1,9 +1,11 @@
+from typing import TypedDict
+
+from allauth.socialaccount.models import SocialAccount
 from django.utils.http import base36_to_int
 from rest_framework import serializers
-from allauth.socialaccount.models import SocialAccount
+
 from .dev import get_logger
 from .models import User
-from typing import TypedDict
 
 logger = get_logger(__name__)
 

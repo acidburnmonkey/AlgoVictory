@@ -9,7 +9,6 @@ from api.dev import get_logger
 from sports.models import UpcomingEventsModel
 from sports.serializers import UpcomingEventsSerializer
 
-
 load_dotenv()
 
 logger = get_logger(__name__)

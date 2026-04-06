@@ -1,6 +1,8 @@
-from rest_framework import serializers
+from rest_framework import fields, serializers
+
 from api.dev import get_logger
-from .models import UpcomingEventsModel
+
+from .models import FighterModel, FightFighterModel, UpcomingEventsModel
 
 logger = get_logger(__name__)
 
@@ -23,3 +25,9 @@ class UpcomingEventsSerializer(serializers.ModelSerializer):
             'shortName',
             'status',
         ]
+
+
+class FighterSerializer(serializers.ModelSerializer):
+    class Meta:  # pyright: ignore
+        model = FighterModel
+        fields = "__all__"

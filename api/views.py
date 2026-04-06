@@ -3,7 +3,6 @@ from allauth.account.forms import ResetPasswordForm
 from django.shortcuts import redirect
 from django.utils.http import urlencode
 from dotenv import load_dotenv
-from .models import User
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
@@ -12,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .dev import API_PORT, FRONTEND_URL, get_logger
+from .models import User
 from .serializers import EmailSendSerializer, SetPasswordSerializer, UserInfoSerializer, UserSerializer
 
 load_dotenv()

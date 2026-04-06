@@ -1,9 +1,10 @@
 import os
 
-from dotenv import load_dotenv
 from allauth.account.adapter import DefaultAccountAdapter
+from dotenv import load_dotenv
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Category, Mail
+
 from .dev import FRONTEND_URL, get_logger
 
 load_dotenv()

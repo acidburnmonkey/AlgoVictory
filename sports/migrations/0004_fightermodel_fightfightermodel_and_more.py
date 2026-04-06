@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('sports', '0003_alter_upcomingevents_eventid'),
     ]
@@ -43,8 +42,21 @@ class Migration(migrations.Migration):
                 ('fight_id', models.IntegerField(unique=True)),
                 ('weight_class', models.CharField(blank=True, max_length=50)),
                 ('status', models.CharField(blank=True, max_length=50)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fights', to='sports.upcomingeventsmodel', to_field='eventId')),
-                ('fighters', models.ManyToManyField(related_name='fights', through='sports.FightFighterModel', to='sports.fightermodel')),
+                (
+                    'event',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='fights',
+                        to='sports.upcomingeventsmodel',
+                        to_field='eventId',
+                    ),
+                ),
+                (
+                    'fighters',
+                    models.ManyToManyField(
+                        related_name='fights', through='sports.FightFighterModel', to='sports.fightermodel'
+                    ),
+                ),
             ],
         ),
         migrations.AddField(

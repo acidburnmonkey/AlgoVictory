@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class UpcomingEventsModel(models.Model):
+class EventBaseModel(models.Model):
     id: int
     active = models.BooleanField()
     dateTime = models.DateTimeField()
@@ -13,11 +13,46 @@ class UpcomingEventsModel(models.Model):
     shortName = models.TextField()
     status = models.TextField()
 
+    class Meta:
+        abstract = True
+
+
+class UpcomingEventsModel(EventBaseModel):
+    pass
+
+
+class PastEventsModel(EventBaseModel):
+    pass
+
 
 class FighterModel(models.Model):
-    fighter_id = models.BigIntegerField(primary_key=True)
+    fighter_id = models.BigIntegerField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    nickname = models.CharField(max_length=100, null=True, blank=True)
+    weight_class = models.CharField(max_length=50, blank=True)
+    birth_date = models.DateTimeField(null=True, blank=True)
+    height = models.FloatField(null=True, blank=True)
+    weight = models.FloatField(null=True, blank=True)
+    reach = models.FloatField(null=True, blank=True)
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
+    draws = models.IntegerField(default=0)
+    no_contests = models.IntegerField(default=0)
+    technical_knockouts = models.IntegerField(default=0)
+    technical_knockout_losses = models.IntegerField(default=0)
+    submissions = models.IntegerField(default=0)
+    submission_losses = models.IntegerField(default=0)
+    title_wins = models.IntegerField(default=0)
+    title_losses = models.IntegerField(default=0)
+    title_draws = models.IntegerField(default=0)
+    sig_strikes_landed_per_minute = models.FloatField(default=0)
+    sig_strike_accuracy = models.FloatField(default=0)
+    takedown_average = models.FloatField(default=0)
+    submission_average = models.FloatField(default=0)
+    knockout_percentage = models.FloatField(default=0)
+    technical_knockout_percentage = models.FloatField(default=0)
+    decision_percentage = models.FloatField(default=0)
 
 
 class FightModel(models.Model):

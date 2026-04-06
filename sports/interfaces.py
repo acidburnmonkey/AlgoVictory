@@ -2,49 +2,49 @@ from typing import TypedDict
 
 
 class TypeScheduleResponse(TypedDict):
-    EventId: int
-    LeagueId: int
-    Name: str
-    ShortName: str
-    Season: int
-    Day: str
-    DateTime: str
-    Status: str
-    Active: bool
+    event_id: int
+    league_id: int
+    name: str
+    short_name: str
+    season: int
+    day: str
+    date_time: str
+    status: str
+    active: bool
 
 
 class TypeUfcCareerStats(TypedDict):
-    FighterId: int
-    FirstName: str
-    LastName: str
-    SigStrikesLandedPerMinute: float
-    SigStrikeAccuracy: float
-    TakedownAverage: float
-    SubmissionAverage: float
-    KnockoutPercentage: float
-    TechnicalKnockoutPercentage: float
-    DecisionPercentage: float
+    fighter_id: int
+    first_name: str
+    last_name: str
+    sig_strikes_landed_per_minute: float
+    sig_strike_accuracy: float
+    takedown_average: float
+    submission_average: float
+    knockout_percentage: float
+    technical_knockout_percentage: float
+    decision_percentage: float
 
 
 class FighterType(TypedDict):
-    FighterId: int
-    FirstName: str
-    LastName: str
-    Nickname: str | None
-    WeightClass: str
-    BirthDate: str
-    Height: float
-    Weight: float
-    Reach: float
-    Wins: int
-    Losses: int
-    Draws: int
-    NoContests: int
-    TechnicalKnockouts: int
-    TechnicalKnockoutLosses: int
-    Submissions: int
-    SubmissionLosses: int
-    TitleWins: int
-    TitleLosses: int
-    TitleDraws: int
-    CareerStats: TypeUfcCareerStats
+    fighter_id: int
+    first_name: str
+    last_name: str
+    nickname: str | None
+    weight_class: str
+    birth_date: str
+    height: float
+    weight: float
+    reach: float
+    wins: int
+    losses: int
+    draws: int
+    no_contests: int
+    technical_knockouts: int
+    technical_knockout_losses: int
+    submissions: int
+    submission_losses: int
+    title_wins: int
+    title_losses: int
+    title_draws: int
+    career_stats: TypeUfcCareerStats

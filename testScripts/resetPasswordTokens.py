@@ -1,4 +1,4 @@
-from django.utils.http import base36_to_int, int_to_base36, urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import base36_to_int, int_to_base36, urlsafe_base64_decode, urlsafe_base64_encode
 
 
 def main():

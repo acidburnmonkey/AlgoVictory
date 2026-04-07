@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from api.dev import SPORTS_API_KEY, get_logger
 
 from .interfaces import TypeScheduleResponse
-from .models import FighterModel
+from sports.models import UpcomingEventsModel, FighterModel
 from .serializers import UpcomingEventsSerializer
 
 load_dotenv()
@@ -79,6 +79,9 @@ def fetch_mma_schedules() -> None:
 
 
 # get Stats
+
+
+@util.close_old_connections
 def save_fighter(data: dict):
     career = data.get('CareerStats') or {}
     FighterModel.objects.update_or_create(
@@ -114,13 +117,10 @@ def save_fighter(data: dict):
     )
 
 
-@util.close_old_connections
 def get_fighter_stats():
 
-    event_id = 903
-
-    # Inner F
-    def get_figters_id(event_id: int) -> tuple[int, int] | None:
+    # Inner F returns 2 fighter ids form event
+    def get_figters_ids(event_id: int) -> tuple[int, int] | None:
         try:
             url = f'https://api.sportsdata.io/v3/mma/scores/json/Event/{event_id}'
             res = requests.get(url, params={'key': SPORTS_API_KEY})
@@ -131,26 +131,42 @@ def get_fighter_stats():
             f2 = fight_chunk['Fights'][0].get('Fighters')[1].get('FighterId')
 
         except requests.exceptions.HTTPError as e:
-            logger.error("HTTP error", e)
+            logger.error(f"HTTP error {e}")
             return
         return (f1, f2)
 
     # END
 
-    ids = get_figters_id(event_id)
-    logger.debug("got fighter ids:", ids)
+    # Inner F -> return all event ids
+    @util.close_old_connections
+    def get_event_ids() -> list[int]:
+        ids: list[int] = list(UpcomingEventsModel.objects.values_list("eventId", flat=True))
+        return ids
 
-    if not ids:
-        return
+    # End
 
-    for fighter_id in ids:
+    all_events = get_event_ids()
+    fighter_ids: list[int] = []
+
+    for event_id in all_events:
+        result = get_figters_ids(event_id)
+
+        if result is not None:
+            fighter_ids.extend(result)
+        logger.debug(f"got fighter ids: {fighter_ids}")
+
+        if not fighter_ids:
+            logger.error("no fighter ids returned")
+            return
+
+    for fighter_id in fighter_ids:
         try:
             url = f'https://api.sportsdata.io/v3/mma/scores/json/Fighter/{fighter_id}'
             res = requests.get(url, params={'key': SPORTS_API_KEY})
             res.raise_for_status()
 
         except requests.exceptions.HTTPError as e:
-            logger.error("HTTP error", e)
+            logger.error(f"HTTP error {e}")
             continue
 
         logger.info("saving fighter stats , response ok")

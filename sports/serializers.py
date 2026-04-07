@@ -1,8 +1,8 @@
-from rest_framework import fields, serializers
+from rest_framework import serializers
 
 from api.dev import get_logger
 
-from .models import FighterModel, FightFighterModel, UpcomingEventsModel
+from .models import FighterModel, UpcomingEventsModel
 
 logger = get_logger(__name__)
 

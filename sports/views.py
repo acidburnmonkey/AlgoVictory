@@ -21,3 +21,8 @@ class ShowAllEventsView(generics.ListAPIView):
     serializer_class = UpcomingEventsSerializer
     queryset = UpcomingEventsModel.objects.all()
     permission_classes = [AllowAny]
+
+
+class TestView(APIView):
+    permission_classes = [AllowAny]
+    pass

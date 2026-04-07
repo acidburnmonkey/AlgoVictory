@@ -17,8 +17,8 @@ tags:
     description: Authenticated user profile access
   - name: Allauth Providers
     description: Social login flow via django-allauth and the subsequent session-to-JWT exchange
-  - name: Leagues
-    description: UFC events, fights, and schedule management
+  - name: Sports
+    description: UFC events and fighter data
   - name: Payments
     description: Stripe checkout and webhook for premium membership
 paths:
@@ -271,105 +271,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /api/leagues/:
+  /sports/show-events/:
     get:
-      tags: [Leagues]
-      summary: Proxy MMA leagues from balldontlie.io
-      description: |
-        Forwards the request to the balldontlie.io MMA API and returns the
-        response as-is. No authentication required.
+      tags: [Sports]
+      summary: List all UFC events
+      description: Returns all stored upcoming UFC events.
       security: []
       responses:
         '200':
-          description: League data from external API
+          description: List of events
           content:
             application/json:
               schema:
-                type: object
-        '502':
-          description: Upstream API error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/events/:
-    get:
-      tags: [Leagues]
-      summary: List UFC events
-      description: |
-        Returns a paginated list of UFC events. Supports filtering by
-        `external_id` or upcoming events only.
-      security: []
-      parameters:
-        - name: external_id
-          in: query
-          schema:
-            type: integer
-          description: Filter by a specific external event ID
-        - name: upcoming
-          in: query
-          schema:
-            type: string
-            enum: ['1', 'true', 'yes']
-          description: When set, returns only events with a future date
-        - name: page
-          in: query
-          schema:
-            type: integer
-            default: 1
-          description: Page number
-        - name: page_size
-          in: query
-          schema:
-            type: integer
-            default: 50
-          description: Number of items per page
-      responses:
-        '200':
-          description: Paginated list of events
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                  page:
-                    type: integer
-                  page_size:
-                    type: integer
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Event'
-                required: [count, page, page_size, results]
-
-  /api/events/{external_id}/:
-    get:
-      tags: [Leagues]
-      summary: Get a single UFC event with fights
-      description: Returns an event by its external ID, including all nested fights.
-      security: []
-      parameters:
-        - name: external_id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Event with fights
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Event'
-        '404':
-          description: Event not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                type: array
+                items:
+                  $ref: '#/components/schemas/UpcomingEvent'
 
   /payments/stripe-pay/:
     post:
@@ -450,60 +366,6 @@ paths:
           description: Event acknowledged
         '400':
           description: Invalid payload or signature verification failed
-
-  /api/events/refresh/:
-    post:
-      tags: [Leagues]
-      summary: Refresh UFC schedule from SportsData.io
-      description: |
-        Admin-only endpoint that fetches the UFC schedule from the SportsData.io
-        API and creates or updates Event and Fight records in the database.
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                season:
-                  type: string
-                  default: '2026'
-                  description: Season year to fetch
-            examples:
-              default:
-                value:
-                  season: '2026'
-      responses:
-        '200':
-          description: Schedule refreshed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  created:
-                    type: integer
-                  updated:
-                    type: integer
-                required: [created, updated]
-        '401':
-          description: Not authenticated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '403':
-          description: Not an admin user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '502':
-          description: Upstream API error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
 
 components:
   securitySchemes:
@@ -623,41 +485,32 @@ components:
           minLength: 4
           description: New password (must be longer than 3 characters)
 
-    Event:
+    UpcomingEvent:
       type: object
       properties:
-        external_id:
+        id:
+          type: integer
+        active:
+          type: boolean
+        dateTime:
+          type: string
+          example: 'April 12, 2026'
+        day:
+          type: string
+          example: 'April 12, 2026'
+        eventId:
+          type: integer
+        leagueId:
           type: integer
         name:
           type: string
-        date:
-          type: string
-          format: date-time
-          nullable: true
-        raw:
-          type: object
-          description: Complete raw API response data
-        fights:
-          type: array
-          items:
-            $ref: '#/components/schemas/Fight'
-      required: [external_id, name, fights]
-
-    Fight:
-      type: object
-      properties:
-        external_id:
+        season:
           type: integer
-        fighter1:
+        shortName:
           type: string
-        fighter2:
+        status:
           type: string
-        weightclass:
-          type: string
-        raw:
-          type: object
-          description: Complete raw API response data
-      required: [external_id, fighter1, fighter2]
+      required: [id, active, dateTime, day, eventId, leagueId, name, season, shortName, status]
 
     Error:
       type: object

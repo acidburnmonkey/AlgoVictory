@@ -287,6 +287,22 @@ paths:
                 items:
                   $ref: '#/components/schemas/UpcomingEvent'
 
+  /sports/fight-card/:
+    get:
+      tags: [Sports]
+      summary: Get the main fight card for the next event
+      description: Returns the main fight for the first upcoming event, including both fighters and their career stats.
+      security: []
+      responses:
+        '200':
+          description: Fight card
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FightCard'
+
   /payments/stripe-pay/:
     post:
       tags: [Payments]
@@ -511,6 +527,98 @@ components:
         status:
           type: string
       required: [id, active, dateTime, day, eventId, leagueId, name, season, shortName, status]
+
+    Fighter:
+      type: object
+      properties:
+        fighter_id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        nickname:
+          type: string
+          nullable: true
+        weight_class:
+          type: string
+        birth_date:
+          type: string
+          format: date-time
+          nullable: true
+        height:
+          type: number
+          nullable: true
+        weight:
+          type: number
+          nullable: true
+        reach:
+          type: number
+          nullable: true
+        wins:
+          type: integer
+        losses:
+          type: integer
+        draws:
+          type: integer
+        no_contests:
+          type: integer
+        technical_knockouts:
+          type: integer
+        technical_knockout_losses:
+          type: integer
+        submissions:
+          type: integer
+        submission_losses:
+          type: integer
+        title_wins:
+          type: integer
+        title_losses:
+          type: integer
+        title_draws:
+          type: integer
+        sig_strikes_landed_per_minute:
+          type: number
+        sig_strike_accuracy:
+          type: number
+        takedown_average:
+          type: number
+        submission_average:
+          type: number
+        knockout_percentage:
+          type: number
+        technical_knockout_percentage:
+          type: number
+        decision_percentage:
+          type: number
+      required: [fighter_id, first_name, last_name]
+
+    FightCardFighter:
+      type: object
+      properties:
+        fighter:
+          $ref: '#/components/schemas/Fighter'
+      required: [fighter]
+
+    FightCard:
+      type: object
+      properties:
+        fight_id:
+          type: integer
+        weight_class:
+          type: string
+        status:
+          type: string
+        event:
+          type: integer
+          description: FK to UpcomingEventsModel (eventId)
+        fighters:
+          type: array
+          items:
+            $ref: '#/components/schemas/FightCardFighter'
+          minItems: 2
+          maxItems: 2
+      required: [fight_id, weight_class, status, event, fighters]
 
     Error:
       type: object

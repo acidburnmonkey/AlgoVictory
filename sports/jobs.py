@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from api.dev import SPORTS_API_KEY, get_logger
 
 from .interfaces import TypeScheduleResponse
-from sports.models import UpcomingEventsModel, FighterModel
+from sports.models import FightFighterModel, FightModel, FighterModel, UpcomingEventsModel
 from .serializers import UpcomingEventsSerializer
 
 load_dotenv()
@@ -119,7 +119,7 @@ def save_fighter(data: dict):
 
 def get_fighter_stats():
 
-    # Inner F returns 2 fighter ids form event
+    # Inner F returns 2 fighter ids from event
     def get_figters_ids(event_id: int) -> tuple[int, int] | None:
         try:
             url = f'https://api.sportsdata.io/v3/mma/scores/json/Event/{event_id}'
@@ -171,3 +171,63 @@ def get_fighter_stats():
 
         logger.info("saving fighter stats , response ok")
         save_fighter(res.json())
+
+    # Link each event's 2 fighters to their FightModel
+    for event_id in all_events:
+        result = get_figters_ids(event_id)
+        if result is None:
+            continue
+
+        f1, f2 = result
+
+        try:
+            url = f'https://api.sportsdata.io/v3/mma/scores/json/Event/{event_id}'
+            res = requests.get(url, params={'key': SPORTS_API_KEY})
+            res.raise_for_status()
+            main_fight = res.json()['Fights'][0]
+        except (requests.exceptions.HTTPError, IndexError, KeyError) as e:
+            logger.error(f"error fetching fight meta for event {event_id}: {e}")
+            continue
+
+        logger.info(f"main_fight: {main_fight}")
+        fight_id = main_fight.get('FightId')
+        if not fight_id:
+            continue
+
+        try:
+            event_obj = UpcomingEventsModel.objects.get(eventId=event_id)
+        except UpcomingEventsModel.DoesNotExist:
+            logger.error(f"Event {event_id} not in DB")
+            continue
+
+        fight_obj, _ = FightModel.objects.update_or_create(
+            fight_id=fight_id,
+            defaults={
+                'event': event_obj,
+                'weight_class': main_fight.get('WeightClass', ''),
+                'status': main_fight.get('Status', ''),
+            },
+        )
+
+        for fd in main_fight.get('Fighters', [])[:2]:
+            fighter_id = fd.get('FighterId')
+            if fighter_id not in (f1, f2):
+                continue
+            try:
+                fighter_obj = FighterModel.objects.get(fighter_id=fighter_id)
+            except FighterModel.DoesNotExist:
+                logger.error(f"Fighter {fighter_id} not in DB")
+                continue
+
+            FightFighterModel.objects.update_or_create(
+                fight=fight_obj,
+                fighter=fighter_obj,
+                defaults={
+                    'moneyline': fd.get('Moneyline'),
+                    'pre_fight_wins': fd.get('PreFightWins'),
+                    'pre_fight_losses': fd.get('PreFightLosses'),
+                    'pre_fight_draws': fd.get('PreFightDraws'),
+                    'pre_fight_no_contests': fd.get('PreFightNoContests'),
+                },
+            )
+        logger.info(f"linked fighters {f1}, {f2} to fight {fight_id} (event {event_id})")

@@ -1,0 +1,11 @@
+{
+  "stats": {
+    "sig_strikes_landed_per_minute": { "avg": 3.5, "min": 0.5, "max": 7.0 },
+    "sig_strike_accuracy":           { "avg": 45,  "min": 20,  "max": 70  },
+    "takedown_average":              { "avg": 1.2, "min": 0.0, "max": 6.0 },
+    "submission_average":            { "avg": 0.3, "min": 0.0, "max": 2.0 },
+    "knockout_percentage":           { "avg": 30,  "min": 0,   "max": 80  },
+    "technical_knockout_percentage": { "avg": 20,  "min": 0,   "max": 80  },
+    "decision_percentage":           { "avg": 42,  "min": 0,   "max": 100 }
+  }
+}

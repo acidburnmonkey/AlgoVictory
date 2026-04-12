@@ -4,7 +4,15 @@ info:
   version: 0.1.0
   description: |
     HTTP API for AlgoVictory. The service is a Django 5 + Django REST Framework application
-    that issues JWTs via SimpleJWT, supports Google and Twitter sign-in through django-allauth. 
+    that issues JWTs via SimpleJWT, supports Google and Twitter sign-in through django-allauth.
+
+    ## Authentication
+    All endpoints require a valid JWT Bearer token by default unless marked with `security: []`.
+
+    ## Rate Limiting
+    All endpoints are subject to global throttling: **10 req/s** for unauthenticated requests,
+    **20 req/s** for authenticated requests. Certain endpoints have stricter scoped limits noted
+    in their descriptions. Exceeded limits return `429 Too Many Requests`.
 servers:
   - url: http://127.0.0.1:8000
     description: Local development
@@ -26,7 +34,10 @@ paths:
     post:
       tags: [Auth]
       summary: Register a new user
-      description: Creates a user account using a username, email, and password.
+      description: |
+        Creates a user account using a username, email, and password.
+
+        Rate limited to **10 requests/hour** per IP (`register` scope).
       security: []
       requestBody:
         required: true
@@ -50,6 +61,12 @@ paths:
                 $ref: '#/components/schemas/User'
         '400':
           description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded (10/hour)
           content:
             application/json:
               schema:
@@ -201,6 +218,8 @@ paths:
         Validates the email against existing accounts and triggers allauth's
         password reset flow, which sends an email containing a uid and token.
         The email links to `FRONTEND_URL/reset-password/{uid}/{key}`.
+
+        Rate limited to **4 requests/hour** per IP (`password_reset` scope).
       security: []
       requestBody:
         required: true
@@ -230,6 +249,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded (4/hour)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/set-password/:
     post:
@@ -239,6 +264,8 @@ paths:
         Accepts the base36-encoded uid and token from the password reset email
         along with a new password. The uid is decoded to look up the user, and
         the token is verified using allauth's `PASSWORD_RESET_TOKEN_GENERATOR`.
+
+        Rate limited to **4 requests/hour** per IP (`password_reset` scope).
       security: []
       requestBody:
         required: true
@@ -266,6 +293,12 @@ paths:
                 required: [ok]
         '400':
           description: Invalid or expired token, or validation error (password too short)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded (4/hour)
           content:
             application/json:
               schema:

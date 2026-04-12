@@ -5,9 +5,9 @@ from django_apscheduler import util
 from dotenv import load_dotenv
 
 from api.dev import SPORTS_API_KEY, get_logger
+from sports.models import FighterModel, FightFighterModel, FightModel, UpcomingEventsModel
 
 from .interfaces import TypeScheduleResponse
-from sports.models import FightFighterModel, FightModel, FighterModel, UpcomingEventsModel
 from .serializers import UpcomingEventsSerializer
 
 load_dotenv()

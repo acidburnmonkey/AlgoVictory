@@ -9,10 +9,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.throttling import ScopedRateThrottle
 
-from .dev import API_PORT, FRONTEND_URL, get_logger
-from .models import User
-from .serializers import EmailSendSerializer, SetPasswordSerializer, UserInfoSerializer, UserSerializer
+from api.dev import API_PORT, FRONTEND_URL, get_logger
+from api.models import User
+from api.serializers import EmailSendSerializer, SetPasswordSerializer, UserInfoSerializer, UserSerializer
 
 load_dotenv()
 
@@ -22,9 +23,11 @@ logger = get_logger(__name__)
 
 
 class CreateUserView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'register'
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
 
 
 class SocialToken(APIView):
@@ -60,6 +63,9 @@ class UserInfoView(APIView):
 
 class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'password_reset'
+
     serializer_class = EmailSendSerializer
 
     def post(self, request: Request) -> Response:
@@ -79,6 +85,9 @@ class ResetPasswordView(APIView):
 
 class SetNewPasswordView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'password_reset'
+
     serializer_class = SetPasswordSerializer
 
     # gets uid, key, password

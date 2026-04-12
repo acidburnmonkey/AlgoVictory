@@ -13,9 +13,6 @@ load_dotenv()
 
 logger = get_logger(__name__)
 
-# event = UpcomingEventsModel.objects.get(event_id=286)
-# fighters = Fighter.objects.filter(fights__event=event).distinct()
-
 
 class ShowAllEventsView(generics.ListAPIView):
     permission_classes = [AllowAny]

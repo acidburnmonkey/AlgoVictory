@@ -59,5 +59,6 @@ export interface FightCardInterface {
     weight_class: string;
     status: string;
     event: number;
+    day: string;
     fighters: { fighter: FighterInterface }[];
 }

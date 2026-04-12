@@ -43,7 +43,11 @@ class FightFighterSerializer(serializers.ModelSerializer):
 
 class CardSerializer(serializers.ModelSerializer):
     fighters = FightFighterSerializer(source='fightfightermodel_set', many=True)
+    day = serializers.SerializerMethodField()
+
+    def get_day(self, obj):
+        return obj.event.day.strftime('%B %d, %Y') if obj.event.day else None
 
     class Meta:  # pyright: ignore
         model = FightModel
-        fields = ['fight_id', 'weight_class', 'status', 'event', 'fighters']
+        fields = ['fight_id', 'weight_class', 'status', 'event', 'day', 'fighters']

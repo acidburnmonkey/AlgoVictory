@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAuth } from '../components/AuthContext';
 import HomePublic from './HomePublic';
+import { FightCard } from '../components';
 
 function Home() {
     const { isAuthenticated, login, user } = useAuth();
@@ -24,6 +25,7 @@ function Home() {
         <div>
             <h1>Home</h1>
             <h2>You are authenticated as {user}</h2>
+            <FightCard />
         </div>
     );
 }

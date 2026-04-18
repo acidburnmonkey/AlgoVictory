@@ -181,17 +181,6 @@ function FighterCol({ fighter, color, align }: FighterColProps) {
         <div
             className={`flex flex-col gap-3 ${end ? 'items-end text-right' : 'items-start text-left'}`}
         >
-            <div
-                className="w-24 h-24 rounded-2xl flex items-center justify-center"
-                style={{
-                    background: `linear-gradient(135deg, ${color}18, ${color}08)`,
-                    border: `1px solid ${color}33`,
-                    fontSize: 40,
-                }}
-            >
-                🥊
-            </div>
-
             <span
                 className="text-[11px] font-semibold tracking-widest uppercase"
                 style={{ color, minHeight: '1rem', display: 'block' }}
@@ -270,7 +259,7 @@ function FightCard() {
     const f2Name = `${fighter2.first_name} ${fighter2.last_name}`;
 
     return (
-        <div className="max-w-2xl mx-auto px-4 py-8 flex flex-col gap-5">
+        <div className="w-[80%] mx-auto py-8 flex flex-col gap-5">
             {/* Header */}
             <div className="rounded-2xl p-6 flex flex-col items-center" style={glass}>
                 <h1
@@ -294,23 +283,71 @@ function FightCard() {
             </div>
 
             {/* Fighter matchup */}
-            <div className="rounded-2xl p-6" style={glass}>
-                <div className="grid grid-cols-[1fr_3rem_1fr] items-center gap-2">
-                    <FighterCol fighter={fighter1} color={F1_COLOR} align="left" />
-                    <div className="flex flex-col items-center">
+            <div className="rounded-2xl p-6 relative overflow-hidden" style={glass}>
+                {/* UFC logo wallpaper */}
+                <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                        backgroundImage: Array(20).fill('url(/UFClogo.svg)').join(', '),
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: '160px, 120px, 140px, 100px, 130px, 110px, 90px, 150px, 105px, 125px, 95px, 135px, 115px, 145px, 85px, 120px, 100px, 80px, 155px, 90px',
+                        backgroundPosition: '5% 10%, 88% 75%, 45% 85%, 92% 8%, 20% 90%, 70% 5%, 15% 45%, 80% 40%, 35% 20%, 60% 60%, 50% 50%, 25% 70%, 75% 25%, 10% 75%, 90% 50%, 40% 5%, 65% 90%, 30% 50%, 55% 30%, 85% 15%',
+                        opacity: 0.20,
+                    }}
+                />
+                <div className="relative flex items-start justify-center gap-0">
+                    {/* Fighter 1 */}
+                    <div className="flex flex-col items-start gap-4">
+                        <div
+                            className="w-[266px] h-[406px] flex items-center justify-center rounded-xl overflow-hidden"
+                            style={{ background: `linear-gradient(135deg, ${F1_COLOR}18, ${F1_COLOR}06)` }}
+                        >
+                            {fighter1.imageURL ? (
+                                <img
+                                    src={fighter1.imageURL}
+                                    alt={`${fighter1.first_name} ${fighter1.last_name}`}
+                                    className="w-full h-full object-cover object-top"
+                                />
+                            ) : (
+                                <span style={{ fontSize: 80 }}>🥊</span>
+                            )}
+                        </div>
+                        <FighterCol fighter={fighter1} color={F1_COLOR} align="left" />
+                    </div>
+
+                    {/* VS */}
+                    <div className="flex items-center self-stretch px-8">
                         <span
-                            className="text-xl font-black"
+                            className="text-5xl font-black"
                             style={{
-                                color: 'transparent',
-                                backgroundClip: 'text',
-                                WebkitBackgroundClip: 'text',
-                                backgroundImage: `linear-gradient(180deg, ${F1_COLOR}, ${F2_COLOR})`,
+                                color: '#EF1C1C',
+                                fontStyle: 'italic',
+                                textShadow: '0 0 20px rgba(239,28,28,0.6), 0 2px 4px rgba(0,0,0,0.9)',
+                                letterSpacing: '0.1em',
                             }}
                         >
                             VS
                         </span>
                     </div>
-                    <FighterCol fighter={fighter2} color={F2_COLOR} align="right" />
+
+                    {/* Fighter 2 */}
+                    <div className="flex flex-col items-end gap-4">
+                        <div
+                            className="w-[266px] h-[406px] flex items-center justify-center rounded-xl overflow-hidden"
+                            style={{ background: `linear-gradient(225deg, ${F2_COLOR}18, ${F2_COLOR}06)` }}
+                        >
+                            {fighter2.imageURL ? (
+                                <img
+                                    src={fighter2.imageURL}
+                                    alt={`${fighter2.first_name} ${fighter2.last_name}`}
+                                    className="w-full h-full object-cover object-top"
+                                />
+                            ) : (
+                                <span style={{ fontSize: 80 }}>🥊</span>
+                            )}
+                        </div>
+                        <FighterCol fighter={fighter2} color={F2_COLOR} align="right" />
+                    </div>
                 </div>
             </div>
 

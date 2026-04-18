@@ -52,6 +52,7 @@ export interface FighterInterface {
     knockout_percentage: number;
     technical_knockout_percentage: number;
     decision_percentage: number;
+    imageURL: string | null;
 }
 
 export interface FightCardInterface {

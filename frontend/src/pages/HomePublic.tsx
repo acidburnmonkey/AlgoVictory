@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { FightCard } from '../components';
 
 function AccuracyRing({ percent }: { percent: number }) {
     const r = 54;
@@ -271,6 +272,10 @@ function HomePublic() {
                         body="Three independent models vote, their outputs are weighted by recent accuracy, and we surface a single win-probability percentage per fighter."
                     />
                 </div>
+            </section>
+
+            <section>
+                <FightCard />
             </section>
 
             <section className="px-4 py-16 max-w-5xl mx-auto w-full">

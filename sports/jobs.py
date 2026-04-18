@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import unicodedata
+from django.db.models import QuerySet
 import requests
 from django_apscheduler import util
 from dotenv import load_dotenv
@@ -231,3 +233,38 @@ def get_fighter_stats():
                 },
             )
         logger.info(f"linked fighters {f1}, {f2} to fight {fight_id} (event {event_id})")
+
+
+# flatten ascii characters
+def to_ascii(text):
+    nfkd = unicodedata.normalize('NFKD', text)
+    return ''.join(c for c in nfkd if not unicodedata.combining(c))
+
+
+def get_octagon_image(raw: str) -> str | None:
+    name = to_ascii(raw).lower().replace(' ', '-')
+
+    url = f'https://api.octagon-api.com/fighter/{name}'
+    response = requests.get(url, timeout=60)
+
+    if response.ok:
+        imgUrl = response.json().get('imgUrl')
+        return imgUrl
+
+    return None
+
+
+@util.close_old_connections
+def set_fighter_image() -> None:
+    missing_url: QuerySet[FighterModel] = FighterModel.objects.filter(imageURL__isnull=True)
+
+    fighters = missing_url.values_list('fighter_id', 'first_name', 'last_name')
+
+    for fighter_id, first_name, last_name in fighters:
+        img_url: str | None = get_octagon_image(f"{first_name} {last_name}")
+
+        if img_url:
+            FighterModel.objects.filter(fighter_id=fighter_id).update(imageURL=img_url)
+            logger.info(f"set image for {first_name} {last_name}")
+        else:
+            logger.warning(f"no image found for {first_name} {last_name}")

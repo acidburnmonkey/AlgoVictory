@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from django.db.models import QuerySet
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -6,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.dev import get_logger
-from sports.models import FightModel, UpcomingEventsModel
-from sports.serializers import CardSerializer, UpcomingEventsSerializer
+from sports.models import FightModel, FighterModel, UpcomingEventsModel
+from sports.serializers import CardSerializer, FighterSerializer, UpcomingEventsSerializer
 
 load_dotenv()
 
@@ -22,7 +23,15 @@ class ShowAllEventsView(generics.ListAPIView):
 
 class TestView(APIView):
     permission_classes = [AllowAny]
-    pass
+
+    def get(self, request):
+
+        fighters: QuerySet[FighterModel] = FighterModel.objects.filter(imageURL__isnull=True)
+        thing = fighters.values('first_name', flat=True)
+        for f in thing:
+            print(f)
+
+        return Response({'thing': thing, 'fighters': FighterSerializer(fighters, many=True).data})
 
 
 class FightCardView(generics.ListAPIView):

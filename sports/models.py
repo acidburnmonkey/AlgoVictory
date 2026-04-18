@@ -53,6 +53,7 @@ class FighterModel(models.Model):
     knockout_percentage = models.FloatField(default=0)
     technical_knockout_percentage = models.FloatField(default=0)
     decision_percentage = models.FloatField(default=0)
+    imageURL = models.URLField(unique=True, blank=True, null=True)
 
 
 class FightModel(models.Model):

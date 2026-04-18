@@ -2,7 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from django_apscheduler.jobstores import DjangoJobStore
 
-from sports.jobs import fetch_mma_schedules, get_fighter_stats
+from sports.jobs import fetch_mma_schedules, get_fighter_stats, set_fighter_image
 
 
 def start():
@@ -20,6 +20,13 @@ def start():
         get_fighter_stats,
         trigger=IntervalTrigger(days=15),
         id="update fighter stats",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+        set_fighter_image,
+        trigger=IntervalTrigger(days=15),
+        id="get fighter image link",
         replace_existing=True,
     )
 

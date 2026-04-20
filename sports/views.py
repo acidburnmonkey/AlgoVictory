@@ -7,8 +7,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.dev import get_logger
-from sports.models import FightModel, FighterModel, UpcomingEventsModel
-from sports.serializers import CardSerializer, FighterSerializer, UpcomingEventsSerializer
+from sports.models import FightModel, UpcomingEventsModel
+from sports.serializers import CardSerializer, UpcomingEventsSerializer
+
 
 load_dotenv()
 
@@ -25,13 +26,7 @@ class TestView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-
-        fighters: QuerySet[FighterModel] = FighterModel.objects.filter(imageURL__isnull=True)
-        thing = fighters.values('first_name', flat=True)
-        for f in thing:
-            print(f)
-
-        return Response({'thing': thing, 'fighters': FighterSerializer(fighters, many=True).data})
+        return
 
 
 class FightCardView(generics.ListAPIView):

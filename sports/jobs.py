@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 import unicodedata
 from django.db.models import QuerySet
@@ -7,10 +7,12 @@ from django_apscheduler import util
 from dotenv import load_dotenv
 
 from api.dev import SPORTS_API_KEY, get_logger
-from sports.models import FighterModel, FightFighterModel, FightModel, UpcomingEventsModel
+from sports.models import FighterModel, FightFighterModel, FightModel, PastEventsModel, UpcomingEventsModel
 
 from .interfaces import TypeScheduleResponse
 from .serializers import UpcomingEventsSerializer
+from datetime import timedelta
+
 
 load_dotenv()
 logger = get_logger(__name__)
@@ -268,3 +270,25 @@ def set_fighter_image() -> None:
             logger.info(f"set image for {first_name} {last_name}")
         else:
             logger.warning(f"no image found for {first_name} {last_name}")
+
+
+def get_top_date() -> date | None:
+    event = UpcomingEventsModel.objects.all().first()
+
+    if event:
+        event_date: date = event.dateTime
+        return event_date
+
+
+@util.close_old_connections
+def archive_event() -> None:
+
+    entry = UpcomingEventsModel.objects.all().first()
+
+    if entry:
+        entry.pk = None
+        logger.info(f"moving event {entry.eventId}")
+
+        entry.__class__ = PastEventsModel  # pyright: ignore
+        entry.save()
+        UpcomingEventsModel.objects.filter(eventId=entry.eventId).delete()

@@ -244,7 +244,7 @@ paths:
                     type: string
                 required: [message]
         '400':
-          description: Validation error (invalid email format or no account found)
+          description: Validation error — invalid email format, or no account found with that email
           content:
             application/json:
               schema:
@@ -323,8 +323,8 @@ paths:
   /sports/fight-card/:
     get:
       tags: [Sports]
-      summary: Get the main fight card for the next event
-      description: Returns the main fight for the first upcoming event, including both fighters and their career stats.
+      summary: Get the fight card for the next event
+      description: Returns all fights for the first upcoming event, including both fighters and their career stats per fight.
       security: []
       responses:
         '200':
@@ -460,7 +460,7 @@ components:
               type: string
             provider:
               type: string
-              description: Authentication provider identifier (`google` or `local`).
+              description: Authentication provider identifier (`google`, `twitter`, or `local`).
             avatar:
               type: string
               format: uri
@@ -470,12 +470,14 @@ components:
               default: false
             payment_date:
               type: string
-              format: date-time
               nullable: true
+              example: '12:00PM Apr 20, 2026'
+              description: Formatted as `%I:%M%p %b %d, %Y`
             payment_expires:
               type: string
-              format: date-time
               nullable: true
+              example: '12:00PM May 20, 2026'
+              description: Formatted as `%I:%M%p %b %d, %Y`
 
     TokenObtainRequest:
       type: object
@@ -624,6 +626,10 @@ components:
           type: number
         decision_percentage:
           type: number
+        imageURL:
+          type: string
+          format: uri
+          nullable: true
       required: [fighter_id, first_name, last_name]
 
     FightCardFighter:
@@ -645,13 +651,16 @@ components:
         event:
           type: integer
           description: FK to UpcomingEventsModel (eventId)
+        day:
+          type: string
+          nullable: true
+          example: 'April 12, 2026'
+          description: Formatted as `%B %d, %Y` from the event's `day` field
         fighters:
           type: array
           items:
             $ref: '#/components/schemas/FightCardFighter'
-          minItems: 2
-          maxItems: 2
-      required: [fight_id, weight_class, status, event, fighters]
+      required: [fight_id, weight_class, status, event, day, fighters]
 
     Error:
       type: object

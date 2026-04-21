@@ -6,8 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Backend (Django)
 ```bash
-# Run dev server (from repo root, venv must be active)
-source .venv/bin/activate
+# Python deps managed with uv (pyproject.toml + uv.lock)
+uv sync                    # install/sync deps
+source .venv/bin/activate  # activate venv before running manage.py
+
 python manage.py runserver
 
 # Migrations
@@ -30,7 +32,7 @@ npm run lint      # eslint
 ### Stripe webhook testing (local)
 ```bash
 stripe listen --forward-to 127.0.0.1:8000/payments/stripe-webhook/
-stripe trigger payment_intent.succeeded
+stripe trigger checkout.session.completed
 ```
 
 ### Test scripts (ad hoc, not a test suite)
@@ -70,23 +72,28 @@ Two auth paths both converge on JWT stored in `localStorage`:
 `AuthContext` (`frontend/src/components/AuthContext.tsx`) is the central auth state. It checks token expiry on mount, auto-refreshes, and fetches `api/user-info/` to populate `username`, `avatar`, and `isPremium`. Wrap protected UI in `<ProtectedRoute>` (requires auth) or `<LogedInLock>` (blocks already-logged-in users from login/register).
 
 ### Sports data ingestion (APScheduler)
-`divinatio/apps.py` starts APScheduler when the Django dev server's main process launches (`RUN_MAIN=true`). Three scheduled jobs run on intervals:
+`divinatio/apps.py` → `runapscheduler.py` starts APScheduler when the Django dev server's main process launches (`RUN_MAIN=true`). All four jobs also fire **immediately on startup**, then repeat on their interval:
 - `fetch_mma_schedules` — every 20 days, pulls UFC schedule from sportsdata.io, upserts `UpcomingEventsModel`
 - `get_fighter_stats` — every 15 days, fetches fighter stats per event and populates `FighterModel` + `FightModel` + `FightFighterModel`
 - `set_fighter_image` — every 15 days, fills missing `imageURL` on `FighterModel` via octagon-api.com
+- `schedule_archive` — every 1 day, schedules a one-shot `archive_event` job to run the day after the next event's date
 
 Jobs are stored in the DB via `DjangoJobStore` and visible in the Django admin.
 
 ### Data model relationships (sports app)
 ```
-UpcomingEventsModel (eventId PK-like, unique)
+UpcomingEventsModel (eventId unique) ──archived──▶ PastEventsModel
     └── FightModel (FK → UpcomingEventsModel.eventId)
             └── FightFighterModel (FK → FightModel, FK → FighterModel)
                     └── FighterModel (fighter_id PK)
 ```
 `FightFighterModel` is the M2M join table and also stores per-fight data: moneyline odds and each fighter's pre-fight record (wins/losses/draws). This is where fight-specific stats live, not on `FighterModel` itself.
 
+`archive_event()` copies the first `UpcomingEventsModel` row to `PastEventsModel` using a `__class__` reassignment trick (`entry.__class__ = PastEventsModel`), then deletes it from `UpcomingEventsModel`.
+
 `FightCardView` serves the upcoming event's fight card by looking up `UpcomingEventsModel.objects.values_list('eventId').first()` at class definition time — this means the queryset is evaluated once at startup, not per request.
+
+`CardSerializer` (used by `FightCardView`) nests `FightFighterSerializer` → `FighterSerializer` but only exposes the `fighter` object — `moneyline` and pre-fight record fields from `FightFighterModel` are not included in the API response.
 
 ### Frontend structure
 - `src/api.ts` — configured axios instance; reads `VITE_API_URL` from env, falls back to `http://127.0.0.1:8000`
@@ -112,7 +119,7 @@ UpcomingEventsModel (eventId PK-like, unique)
 | `VITE_PROD_WIP` | Shows `ConstructionBanner` when true |
 
 ### Premium / payments
-`payments/views.py` creates Stripe checkout sessions and handles `payment_intent.succeeded` webhooks. On success, `User.premium` is set to `True` and `User.paymentDate` + `User.premiumExpiry` (1 month out) are recorded. `AuthContext` exposes `isPremium` derived from the `/api/user-info/` response.
+`payments/views.py` creates Stripe checkout sessions and handles `checkout.session.completed` webhooks. On success, `User.premium` is set to `True` and `User.payment_date` + `User.payment_expires` (1 month out) are recorded. `AuthContext` exposes `isPremium` derived from the `/api/user-info/` response.
 
 ### Shared dev config (`api/dev.py`)
 `api/dev.py` centralises port/URL constants and provides `get_logger()`. In dev mode (no `production` env var), all ports and URLs are hardcoded defaults. Import from here rather than repeating `os.getenv` calls in view files.

@@ -137,6 +137,10 @@ def get_fighter_stats():
         except requests.exceptions.HTTPError as e:
             logger.error(f"HTTP error {e}")
             return
+
+        except IndexError:
+            logger.error("no Fighters yet")
+            return
         return (f1, f2)
 
     # END

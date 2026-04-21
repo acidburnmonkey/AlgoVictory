@@ -1,6 +1,7 @@
 import requests
 from dotenv import load_dotenv
 import os
+from pprint import pprint
 
 load_dotenv()
 
@@ -12,12 +13,17 @@ def get_figters_ids(event_id: int):
         res.raise_for_status()
 
         fight_chunk = res.json()
+
         f1 = fight_chunk['Fights'][0].get('Fighters')[0].get('FighterId')
         f2 = fight_chunk['Fights'][0].get('Fighters')[1].get('FighterId')
 
     except requests.exceptions.HTTPError as e:
         print(f"HTTP error {e}")
         return
+    except IndexError:
+        print("no Fighters yet")
+        return
+
     print(f1, f2)
 
 

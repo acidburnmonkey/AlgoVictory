@@ -1,11 +1,11 @@
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.interval import IntervalTrigger
-from apscheduler.triggers.date import DateTrigger
-from django_apscheduler.jobstores import DjangoJobStore
-
-from sports.jobs import fetch_mma_schedules, get_fighter_stats, set_fighter_image, get_top_date, archive_event
 from datetime import date, timedelta
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.date import DateTrigger
+from apscheduler.triggers.interval import IntervalTrigger
+from django_apscheduler.jobstores import DjangoJobStore
+
+from sports.jobs import archive_event, fetch_mma_schedules, get_fighter_stats, get_top_date, set_fighter_image
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), "default")

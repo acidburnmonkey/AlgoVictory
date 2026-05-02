@@ -1,5 +1,6 @@
-import requests
 from pprint import pprint
+
+import requests
 
 
 def flood(endpoint='/'):

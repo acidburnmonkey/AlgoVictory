@@ -85,3 +85,13 @@ class FightFighterModel(models.Model):
 
     class Meta:
         unique_together = ("fight", "fighter")
+
+
+class AisResponseModel(models.Model):
+    chatter = models.JSONField()
+    event = models.ForeignKey(
+        UpcomingEventsModel,
+        to_field="eventId",
+        on_delete=models.CASCADE,
+        related_name="ai_analysis",
+    )

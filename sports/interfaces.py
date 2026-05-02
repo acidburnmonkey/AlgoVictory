@@ -47,4 +47,25 @@ class FighterType(TypedDict):
     title_wins: int
     title_losses: int
     title_draws: int
+    sig_strikes_landed_per_minute: float
+    sig_strike_accuracy: float
+    takedown_average: float
+    submission_average: float
+    knockout_percentage: float
+    technical_knockout_percentage: float
+    decision_percentage: float
+    imageURL: str | None
     career_stats: TypeUfcCareerStats
+
+
+class FightFighterType(TypedDict):
+    fighter: FighterType
+
+
+class FightCardType(TypedDict):
+    fight_id: int
+    weight_class: str
+    status: str
+    event: int
+    day: str | None
+    fighters: list[FightFighterType]

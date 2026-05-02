@@ -1,8 +1,8 @@
-from datetime import date, datetime
-
 import unicodedata
-from django.db.models import QuerySet
+from datetime import date, datetime, timedelta
+
 import requests
+from django.db.models import QuerySet
 from django_apscheduler import util
 from dotenv import load_dotenv
 
@@ -11,8 +11,6 @@ from sports.models import FighterModel, FightFighterModel, FightModel, PastEvent
 
 from .interfaces import TypeScheduleResponse
 from .serializers import UpcomingEventsSerializer
-from datetime import timedelta
-
 
 load_dotenv()
 logger = get_logger(__name__)

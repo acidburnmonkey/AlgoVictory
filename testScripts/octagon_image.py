@@ -1,5 +1,6 @@
-import requests
 import unicodedata
+
+import requests
 
 
 # Decompose characters (e.g., í → i + combining accent)

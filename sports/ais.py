@@ -1,11 +1,15 @@
 import json
 import re
 
-from dotenv import load_dotenv
 from groq import Groq
 from pydantic import Json
 
-load_dotenv()
+from api.dev import get_logger
+from sports.interfaces import FightCardType
+from sports.models import FightModel, UpcomingEventsModel
+from sports.serializers import CardSerializer
+
+logger = get_logger(__name__)
 
 
 def parse_model_response(text: str) -> dict:
@@ -17,10 +21,17 @@ def parse_model_response(text: str) -> dict:
     return json.loads(text.strip())
 
 
-def main():
+def get_fight_card() -> list[FightCardType]:
+    upcoming_now = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
+    queryset = FightModel.objects.prefetch_related('fightfightermodel_set__fighter').filter(event__eventId=upcoming_now)
+    data = CardSerializer(queryset, many=True).data
+    return data
+
+
+def send_card_to_groq():
     client = Groq()
 
-    instructions = """" you are an expert in spoerts analytics , you will be provided a json file with 2 fighters for an upcoming fight and
+    instructions = """" you are an expert in spoerts analytics , you will be provided a json fight_card with 2 fighters for an upcoming fight and
     their stats , compare them and and make a prediction on who the winner will be ,
     reply back with the format in json
             analysis:{
@@ -34,7 +45,10 @@ def main():
                     Performance Index: interpret},
                 winer:{name:fighter_id , factor: knockout , points, comment:'your short comment'} }"""
 
-    file = get_jason()
+    fight_card = get_fight_card()
+    if fight_card is None:
+        logger.error("get_fight_card() retuened None")
+        return
 
     models = [
         "llama-3.3-70b-versatile",
@@ -43,7 +57,7 @@ def main():
         "qwen/qwen3-32b",
     ]
 
-    prompt = f"{instructions}, this is the fight card {file} only reply back with the json i asked"
+    prompt = f"{instructions}, this is the fight card {fight_card} only reply back with the json I asked"
 
     results = {}
     for model in models:
@@ -52,25 +66,14 @@ def main():
             messages=[{"role": "user", "content": prompt}],
         )
         raw: Json = response.choices[0].message.content
-        print(f"\n--- {model} ---")
-        print(raw)
+        logger.debug(f"\n--- {model} ---")
+        logger.debug(raw)
         try:
             results[model] = parse_model_response(raw)
         except json.JSONDecodeError as e:
-            print(f"  [parse error] {e}")
+            logger.error(f"  [parse error] {e}")
             results[model] = {"raw": raw}
 
+    ####  CHANGE THIS TO DB
     with open("res.json", "w") as f:
         json.dump(results, f, indent=4)
-
-
-def get_jason() -> str:
-
-    with open("fight_card.json", 'r') as f:
-        file = f.read()
-
-    return file
-
-
-if __name__ == "__main__":
-    main()

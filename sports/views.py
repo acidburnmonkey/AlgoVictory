@@ -1,5 +1,5 @@
-from dotenv import load_dotenv
 from django.db.models import QuerySet
+from dotenv import load_dotenv
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 from api.dev import get_logger
 from sports.models import FightModel, UpcomingEventsModel
 from sports.serializers import CardSerializer, UpcomingEventsSerializer
-
 
 load_dotenv()
 

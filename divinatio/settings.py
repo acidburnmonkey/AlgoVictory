@@ -9,11 +9,12 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6uj=5$eha)16v(-xleylct%vpcqhc36rrpuuiygqjq2x#zvk8('
-
-DEBUG = True
-
+if os.getenv('production'):
+    SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+    DEBUG = False
+else:
+    SECRET_KEY = 'django-insecure-6uj=5$eha)16v(-xleylct%vpcqhc36rrpuuiygqjq2x#zvk8('
+    DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -57,7 +58,6 @@ INSTALLED_APPS = [
     'divinatio.apps.AlgoVictoryConfig',
 ]
 
-SITE_ID = 1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

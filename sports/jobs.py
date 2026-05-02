@@ -37,7 +37,9 @@ def fetch_schedules() -> list[TypeScheduleResponse] | None:
     filered_events: list[TypeScheduleResponse] = []
 
     for event in response_data:
-        if datetime.fromisoformat(event.get('DateTime', '')) > today and 'Fight Night' not in event.get('Name', ''):
+        if event.get('DateTime') is None:
+            continue
+        elif datetime.fromisoformat(event.get('DateTime', '')) > today and 'Fight Night' not in event.get('Name', ''):
             filered_events.append(event)
 
     return filered_events

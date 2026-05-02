@@ -5,8 +5,8 @@ from django.db import migrations
 
 def create_sites(apps, schema_editor):
     Site = apps.get_model('sites', 'Site')
-    Site.objects.get_or_create(domain='algovictory.com', defaults={'name': 'Site'})
     Site.objects.get_or_create(domain='127.0.0.1:8000', defaults={'name': 'Localhost'})
+    Site.objects.get_or_create(domain='algovictory.com', defaults={'name': 'Site'})
 
 
 class Migration(migrations.Migration):

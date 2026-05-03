@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
 from api.dev import get_logger
-
-from .models import FighterModel, FightFighterModel, FightModel, UpcomingEventsModel
+from sports.models import AisResponseModel, FighterModel, FightFighterModel, FightModel, UpcomingEventsModel
 
 logger = get_logger(__name__)
 
@@ -51,3 +50,9 @@ class CardSerializer(serializers.ModelSerializer):
     class Meta:  # pyright: ignore
         model = FightModel
         fields = ['fight_id', 'weight_class', 'status', 'event', 'day', 'fighters']
+
+
+class AisResponseSerializer(serializers.ModelSerializer):
+    class Meta:  # pyright: ignore
+        model = AisResponseModel
+        fields = '__all__'

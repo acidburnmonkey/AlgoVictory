@@ -1,14 +1,7 @@
 from pprint import pprint
 
-from sports.models import FightModel, UpcomingEventsModel
-from sports.serializers import CardSerializer
+from sports.models import UpcomingEventsModel, AisResponseModel
 
 
-def get_fight_card():
-    upcoming_now = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
-    queryset = FightModel.objects.prefetch_related('fightfightermodel_set__fighter').filter(event__eventId=upcoming_now)
-    data = CardSerializer(queryset, many=True).data
-    pprint(data)
-
-
-get_fight_card()
+event_id = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
+AisResponseModel.objects.update_or_create(event_id=event_id, defaults={"chatter": "{test1:test1}"})

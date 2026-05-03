@@ -6,6 +6,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from django_apscheduler.jobstores import DjangoJobStore
 
 from sports.jobs import archive_event, fetch_mma_schedules, get_fighter_stats, get_top_date, set_fighter_image
+from sports.ais import send_card_to_groq
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), "default")
@@ -44,6 +45,13 @@ def start():
     )
 
     scheduler.add_job(
+        send_card_to_groq,
+        trigger=IntervalTrigger(days=20),
+        id="send card to groq AI",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
         get_fighter_stats,
         trigger=IntervalTrigger(days=15),
         id="update fighter stats",
@@ -69,4 +77,5 @@ def start():
     fetch_mma_schedules()
     get_fighter_stats()
     set_fighter_image()
+    # send_card_to_groq()
     schedule_archive()

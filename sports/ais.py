@@ -8,6 +8,7 @@ from api.dev import get_logger
 from sports.interfaces import FightCardType
 from sports.models import FightModel, UpcomingEventsModel
 from sports.serializers import CardSerializer
+from sports.models import AisResponseModel
 
 logger = get_logger(__name__)
 
@@ -74,6 +75,6 @@ def send_card_to_groq():
             logger.error(f"  [parse error] {e}")
             results[model] = {"raw": raw}
 
-    ####  CHANGE THIS TO DB
-    with open("res.json", "w") as f:
-        json.dump(results, f, indent=4)
+    event_id = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
+
+    AisResponseModel.objects.update_or_create(event__eventId=event_id, defaults={"chatter": results})

@@ -1,16 +1,27 @@
 from dotenv import load_dotenv
 from rest_framework import generics
+from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework import permissions
 
 from api.dev import get_logger
+from api.models import User
 from sports.models import AisResponseModel, FightModel, UpcomingEventsModel
 from sports.serializers import AisResponseSerializer, CardSerializer, UpcomingEventsSerializer
 
 load_dotenv()
-
 logger = get_logger(__name__)
+
+
+class PremiumUser(permissions.BasePermission):
+    message = "Only preium users can access this"
+
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        puser = User.objects.filter(premium=True, username=request.user).first()
+
+        return puser is not None
 
 
 class ShowAllEventsView(generics.ListAPIView):
@@ -23,7 +34,14 @@ class TestView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request: Request) -> None:
-        return
+        print("""
+              TEST view
+              """)
+
+        print("request", request.user)
+        print("request username", request.user)
+
+        return Response({'message': 'ok', 'debug': 'debuging'}, status=200)  # pyright: ignore
 
 
 class FightCardView(generics.ListAPIView):
@@ -34,7 +52,7 @@ class FightCardView(generics.ListAPIView):
 
 
 class AiAnalysisView(generics.RetrieveAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [PremiumUser]
     serializer_class = AisResponseSerializer
 
     def get_object(self) -> AisResponseModel:

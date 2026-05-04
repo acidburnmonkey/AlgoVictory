@@ -1,11 +1,12 @@
 from pprint import pprint
 
 
-from sports.models import FighterModel, AisResponseModel, UpcomingEventsModel
+from sports.models import *
+from api.models import *
 
-
-event_id = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
-query = AisResponseModel.objects.get(event_id=event_id)
+query = User.objects.filter(premium=True, username='mal0').first()
 
 pprint(f"Type: {type(query)}")
+
 pprint(query)
+pprint(query is None)

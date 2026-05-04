@@ -22,11 +22,23 @@ ALLOWED_HOSTS = ['*']
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.SessionAuthentication",  # alluth providers
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/second',
+        'user': '20/second',
+        'login': '5/min',
+        'register': '10/hour',
+        'password_reset': '4/hour',
+    },
 }
 
 SIMPLE_JWT = {
@@ -72,21 +84,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'divinatio.urls'
-
-REST_FRAMEWORK = {
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle',
-        'rest_framework.throttling.ScopedRateThrottle',
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/second',
-        'user': '20/second',
-        'login': '5/min',
-        'register': '10/hour',
-        'password_reset': '4/hour',
-    },
-}
 
 TEMPLATES = [
     {

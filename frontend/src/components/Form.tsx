@@ -25,7 +25,6 @@ type FormProps = {
 };
 
 const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
-const IN_CONSTRUCTION = import.meta.env.VITE_PROD_WIP === 'true';
 
 function Form({ route, method }: FormProps) {
     const [username, setUsername] = useState('');
@@ -37,7 +36,6 @@ function Form({ route, method }: FormProps) {
     const { login } = useAuth();
 
     const isLogin = method === 'login';
-    console.log('IN_CONSTRUCTION:', IN_CONSTRUCTION);
 
     const handleGoogleLogin = () => {
         if (!API_URL) {
@@ -255,7 +253,6 @@ function Form({ route, method }: FormProps) {
                             type="submit"
                             variant="contained"
                             fullWidth
-                            disabled={loading || IN_CONSTRUCTION}
                             sx={{
                                 py: 1.4,
                                 fontSize: '0.95rem',
@@ -291,7 +288,6 @@ function Form({ route, method }: FormProps) {
                             variant="outlined"
                             fullWidth
                             onClick={handleGoogleLogin}
-                            disabled={loading || IN_CONSTRUCTION}
                             startIcon={<GoogleIcon />}
                             sx={{ py: 1.3 }}
                         >
@@ -302,7 +298,6 @@ function Form({ route, method }: FormProps) {
                             variant="outlined"
                             fullWidth
                             onClick={handleXlogin}
-                            disabled={loading || IN_CONSTRUCTION}
                             startIcon={<Twitter />}
                             sx={{ py: 1.3 }}
                         >

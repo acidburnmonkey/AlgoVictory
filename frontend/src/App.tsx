@@ -6,7 +6,6 @@ import {
     NavBar,
     ProtectedRoute,
     LogedInLock,
-    ConstructionBanner,
     FightCard,
 } from './components';
 import { ThemeProvider } from '@mui/material/styles';
@@ -41,7 +40,6 @@ function App() {
                             minHeight: '100vh',
                         }}
                     >
-                        <ConstructionBanner />
                         <NavBar />
                         <Suspense
                             fallback={

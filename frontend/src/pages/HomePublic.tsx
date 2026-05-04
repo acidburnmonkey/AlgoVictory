@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
-import { FightCard } from '../components';
+import { lazy, Suspense } from 'react';
+
+const FightCard = lazy(() => import('../components/FightCard'));
 
 function AccuracyRing({ percent }: { percent: number }) {
     const r = 54;
@@ -228,7 +230,7 @@ function HomePublic() {
                         <div className="pt-2 grid grid-cols-3 gap-4 text-center">
                             {[
                                 { v: '4,200+', l: 'Fights analysed' },
-                                { v: '3', l: 'AI models' },
+                                { v: '4', l: 'AI models' },
                                 { v: '12+', l: 'Data sources' },
                             ].map(({ v, l }) => (
                                 <div key={l} className="flex flex-col gap-0.5">
@@ -275,7 +277,9 @@ function HomePublic() {
             </section>
 
             <section>
-                <FightCard />
+                <Suspense fallback={null}>
+                    <FightCard />
+                </Suspense>
             </section>
 
             <section className="px-4 py-16 max-w-5xl mx-auto w-full">

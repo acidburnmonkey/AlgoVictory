@@ -284,14 +284,14 @@ function FightCard() {
 
             {/* Fighter matchup */}
             <div className="rounded-2xl p-6 relative overflow-hidden" style={glass}>
-                {/* UFC logo wallpaper */}
+                {/* UFC canvas wallpaper */}
                 <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                        backgroundImage: Array(20).fill('url(/UFClogo.svg)').join(', '),
+                        backgroundImage: 'url(/ufc-canvas.png)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
-                        backgroundSize: '160px, 120px, 140px, 100px, 130px, 110px, 90px, 150px, 105px, 125px, 95px, 135px, 115px, 145px, 85px, 120px, 100px, 80px, 155px, 90px',
-                        backgroundPosition: '5% 10%, 88% 75%, 45% 85%, 92% 8%, 20% 90%, 70% 5%, 15% 45%, 80% 40%, 35% 20%, 60% 60%, 50% 50%, 25% 70%, 75% 25%, 10% 75%, 90% 50%, 40% 5%, 65% 90%, 30% 50%, 55% 30%, 85% 15%',
                         opacity: 0.20,
                     }}
                 />

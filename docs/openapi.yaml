@@ -336,6 +336,69 @@ paths:
                 items:
                   $ref: '#/components/schemas/FightCard'
 
+  /sports/ai/:
+    get:
+      tags: [Sports]
+      summary: Get AI analysis for the upcoming fight card
+      description: |
+        Returns the stored AI analysis record for the current upcoming event.
+        Four LLM models each provide a per-fighter breakdown and a winner prediction:
+        - `qwen/qwen3-32b`
+        - `llama-3.1-8b-instant`
+        - `llama-3.3-70b-versatile`
+        - `meta-llama/llama-4-scout-17b-16e-instruct`
+
+        **Requires premium membership.** The request must carry a valid JWT for an
+        account where `premium = true`. A valid JWT from a non-premium account
+        returns `403`.
+      responses:
+        '200':
+          description: AI analysis record for the upcoming event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AisResponse'
+        '401':
+          description: Missing or invalid JWT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Authenticated user does not have premium membership
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No AI analysis record found for the current event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /sports/test/:
+    get:
+      tags: [Sports]
+      summary: Debug test endpoint
+      description: Returns a static debug payload. No authentication required.
+      security: []
+      responses:
+        '200':
+          description: Debug response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: ok
+                  debug:
+                    type: string
+                    example: debuging
+                required: [message, debug]
+
   /payments/stripe-pay/:
     post:
       tags: [Payments]
@@ -661,6 +724,92 @@ components:
           items:
             $ref: '#/components/schemas/FightCardFighter'
       required: [fight_id, weight_class, status, event, day, fighters]
+
+    AiFighterAnalysis:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Fighter's full name
+        Advantages:
+          type: string
+          description: Model's assessment of the fighter's strengths
+        Disadvantages:
+          type: string
+          description: Model's assessment of the fighter's weaknesses
+        Performance Index:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Model-assigned overall performance score
+      required: [name, Advantages, Disadvantages, Performance Index]
+
+    AiWinner:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the predicted winner
+        factor:
+          type: string
+          description: Predicted finishing method (e.g. "KO", "TKO round 2", "points")
+        comment:
+          type: string
+          description: Model's reasoning for the prediction
+        points:
+          type: integer
+          nullable: true
+          description: Optional scoring margin when factor is points-based
+      required: [name, factor, comment]
+
+    AiModelAnalysis:
+      type: object
+      properties:
+        fighter_1:
+          $ref: '#/components/schemas/AiFighterAnalysis'
+        fighter_2:
+          $ref: '#/components/schemas/AiFighterAnalysis'
+        winner:
+          $ref: '#/components/schemas/AiWinner'
+      required: [fighter_1, fighter_2, winner]
+
+    AiModelResult:
+      type: object
+      properties:
+        analysis:
+          $ref: '#/components/schemas/AiModelAnalysis'
+      required: [analysis]
+
+    AiChatter:
+      type: object
+      description: |
+        Keyed by model identifier. All four keys are always present.
+      properties:
+        qwen/qwen3-32b:
+          $ref: '#/components/schemas/AiModelResult'
+        llama-3.1-8b-instant:
+          $ref: '#/components/schemas/AiModelResult'
+        llama-3.3-70b-versatile:
+          $ref: '#/components/schemas/AiModelResult'
+        meta-llama/llama-4-scout-17b-16e-instruct:
+          $ref: '#/components/schemas/AiModelResult'
+      required:
+        - qwen/qwen3-32b
+        - llama-3.1-8b-instant
+        - llama-3.3-70b-versatile
+        - meta-llama/llama-4-scout-17b-16e-instruct
+
+    AisResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        event:
+          type: integer
+          description: FK to UpcomingEventsModel (eventId)
+        chatter:
+          $ref: '#/components/schemas/AiChatter'
+      required: [id, event, chatter]
 
     Error:
       type: object

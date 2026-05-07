@@ -3,8 +3,12 @@ import { useAuth } from '../components/AuthContext';
 import HomePublic from './HomePublic';
 import { FightCard } from '../components';
 
+function GottaPay() {
+    return <></>;
+}
+
 function Home() {
-    const { isAuthenticated, login, user } = useAuth();
+    const { isAuthenticated, login, isPremium } = useAuth();
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -17,14 +21,12 @@ function Home() {
         }
     }, []);
 
+    //idk why is this here
     if (isAuthenticated === null) return null;
-
     if (!isAuthenticated) return <HomePublic />;
 
     return (
         <div>
-            <h1>Home</h1>
-            <h2>You are authenticated as {user}</h2>
             <FightCard />
         </div>
     );

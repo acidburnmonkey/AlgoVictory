@@ -162,7 +162,7 @@ function ConsensusPanel({ data }: { data: AiAnalysisResponse }) {
                         className="text-xs font-black tracking-[0.25em] uppercase"
                         style={{ color: GOLD }}
                     >
-                        AI Oracle
+                        {data.event_short_name}
                     </span>
                     <div
                         className="flex-1 h-px"

@@ -272,7 +272,7 @@ function FightCard() {
                             'linear-gradient(135deg, #FFD54F 0%, #FF8F00 100%)',
                     }}
                 >
-                    UFC {card.event}
+                    {card.event_short_name}
                 </h1>
                 <p
                     className="text-base mt-2 font-bold tracking-wide uppercase"
@@ -292,7 +292,7 @@ function FightCard() {
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
-                        opacity: 0.20,
+                        opacity: 0.2,
                     }}
                 />
                 <div className="relative flex items-start justify-center gap-0">
@@ -300,7 +300,9 @@ function FightCard() {
                     <div className="flex flex-col items-start gap-4">
                         <div
                             className="w-[266px] h-[406px] flex items-center justify-center rounded-xl overflow-hidden"
-                            style={{ background: `linear-gradient(135deg, ${F1_COLOR}18, ${F1_COLOR}06)` }}
+                            style={{
+                                background: `linear-gradient(135deg, ${F1_COLOR}18, ${F1_COLOR}06)`,
+                            }}
                         >
                             {fighter1.imageURL ? (
                                 <img
@@ -322,7 +324,8 @@ function FightCard() {
                             style={{
                                 color: '#EF1C1C',
                                 fontStyle: 'italic',
-                                textShadow: '0 0 20px rgba(239,28,28,0.6), 0 2px 4px rgba(0,0,0,0.9)',
+                                textShadow:
+                                    '0 0 20px rgba(239,28,28,0.6), 0 2px 4px rgba(0,0,0,0.9)',
                                 letterSpacing: '0.1em',
                             }}
                         >
@@ -334,7 +337,9 @@ function FightCard() {
                     <div className="flex flex-col items-end gap-4">
                         <div
                             className="w-[266px] h-[406px] flex items-center justify-center rounded-xl overflow-hidden"
-                            style={{ background: `linear-gradient(225deg, ${F2_COLOR}18, ${F2_COLOR}06)` }}
+                            style={{
+                                background: `linear-gradient(225deg, ${F2_COLOR}18, ${F2_COLOR}06)`,
+                            }}
                         >
                             {fighter2.imageURL ? (
                                 <img

@@ -88,12 +88,14 @@ interface AiChatter {
 
 export interface AiAnalysisResponse {
     id: number;
+    event_short_name: string;
     chatter: AiChatter;
     event: number;
 }
 
 export interface FightCardInterface {
     fight_id: number;
+    event_short_name: string;
     weight_class: string;
     status: string;
     event: number;

@@ -1,10 +1,12 @@
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { Link as RouterLink } from 'react-router-dom';
 
 function Footer() {
@@ -26,9 +28,28 @@ function Footer() {
                     alignItems="center"
                     spacing={2}
                 >
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        &copy; {new Date().getFullYear()} AlgoVictory. All rights reserved.
-                    </Typography>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                            &copy; {new Date().getFullYear()} AlgoVictory. All rights reserved.
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'text.disabled' }}>
+                            · Developer
+                        </Typography>
+                        <IconButton
+                            component="a"
+                            href="https://github.com/acidburnmonkey"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            size="small"
+                            sx={{
+                                color: 'text.secondary',
+                                transition: 'color 0.2s ease',
+                                '&:hover': { color: 'primary.main' },
+                            }}
+                        >
+                            <GitHubIcon fontSize="small" />
+                        </IconButton>
+                    </Stack>
 
                     <Stack direction="row" spacing={3}>
                         <Link

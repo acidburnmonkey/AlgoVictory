@@ -6,7 +6,6 @@ import {
     NavBar,
     ProtectedRoute,
     LogedInLock,
-    FightCard,
     AiAnalysis,
 } from './components';
 import { ThemeProvider } from '@mui/material/styles';

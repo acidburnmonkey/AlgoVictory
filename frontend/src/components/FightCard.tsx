@@ -246,7 +246,7 @@ function FightCard() {
 
     if (!card || !fighter1 || !fighter2) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
+            <div className="flex items-center justify-center" style={{ minHeight: 1400 }}>
                 <span className="text-sm animate-pulse" style={{ color: F1_COLOR }}>
                     Loading fight card…
                 </span>
@@ -409,7 +409,7 @@ function FightCard() {
                                 fontSize: 11,
                                 color: '#F5F5F5',
                             }}
-                            formatter={(val: number) => [`${val} / 100`, '']}
+                            formatter={(val) => [`${val} / 100`, '']}
                         />
                     </RadarChart>
                 </ResponsiveContainer>

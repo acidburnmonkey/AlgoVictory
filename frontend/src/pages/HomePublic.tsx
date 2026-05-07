@@ -276,8 +276,8 @@ function HomePublic() {
                 </div>
             </section>
 
-            <section>
-                <Suspense fallback={null}>
+            <section style={{ minHeight: 1400 }}>
+                <Suspense fallback={<div style={{ minHeight: 1400 }} />}>
                     <FightCard />
                 </Suspense>
             </section>

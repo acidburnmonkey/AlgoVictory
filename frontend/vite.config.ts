@@ -8,4 +8,16 @@ export default defineConfig({
         host: '127.0.0.1',
         port: 5173,
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+                    'mui': ['@mui/material', '@emotion/react', '@emotion/styled'],
+                    'mui-icons': ['@mui/icons-material'],
+                    'recharts': ['recharts'],
+                },
+            },
+        },
+    },
 });

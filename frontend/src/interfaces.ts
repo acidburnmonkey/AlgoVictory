@@ -55,6 +55,43 @@ export interface FighterInterface {
     imageURL: string | null;
 }
 
+interface AiFighterAnalysis {
+    name: string;
+    Advantages: string;
+    Disadvantages: string;
+    'Performance Index': number;
+}
+
+interface AiWinner {
+    name: string;
+    factor: string;
+    comment: string;
+    points?: number;
+}
+
+interface AiAnalysis {
+    fighter_1: AiFighterAnalysis;
+    fighter_2: AiFighterAnalysis;
+    winner: AiWinner;
+}
+
+interface AiModelResult {
+    analysis: AiAnalysis;
+}
+
+interface AiChatter {
+    'llama-3.1-8b-instant': AiModelResult;
+    'llama-3.3-70b-versatile': AiModelResult;
+    'meta-llama/llama-4-scout-17b-16e-instruct': AiModelResult;
+    'qwen/qwen3-32b': AiModelResult;
+}
+
+export interface AiAnalysisResponse {
+    id: number;
+    chatter: AiChatter;
+    event: number;
+}
+
 export interface FightCardInterface {
     fight_id: number;
     weight_class: string;

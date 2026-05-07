@@ -30,19 +30,19 @@ def get_fight_card() -> list[FightCardType]:
 def send_card_to_groq() -> None:
     client = Groq()
 
-    instructions = """" you are an expert in spoerts analytics , you will be provided a json fight_card with 2 fighters for an upcoming fight and
+    instructions = """" you are an expert in sports analytics , you will be provided a json fight_card with 2 fighters for an upcoming fight and
     their stats , compare them and and make a prediction on who the winner will be ,
     reply back with the format in json
             analysis:{
                 fighter_1: { name,
                     Advantages: analyze,
                     Disadvantages: analyze,
-                    Performance Index: interpret},
+                    Performance Index: number from 1 to 100},
                 fighter_2: { name,
                     Advantages: analyze,
                     Disadvantages: analyze,
-                    Performance Index: interpret},
-                winer:{name:fighter_id , factor: knockout , points, comment:'your short comment'} }"""
+                    Performance Index: number from 1 to 100},
+                winer:{name: fighter name , factor: knockout , points, comment:'your short comment summarizing your analysis'} }"""
 
     fight_card: list[FightCardType] = get_fight_card()
     if fight_card is None:

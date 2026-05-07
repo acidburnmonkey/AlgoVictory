@@ -7,6 +7,7 @@ import {
     ProtectedRoute,
     LogedInLock,
     FightCard,
+    AiAnalysis,
 } from './components';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -63,7 +64,7 @@ function App() {
                                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                 <Route path="/terms-of-service" element={<TermsOfService />} />
                                 <Route path="*" element={<NotFound />} />
-                                <Route path="/test" element={<FightCard />} />
+                                <Route path="/test" element={<AiAnalysis />} />
                                 <Route
                                     path="/reset-password"
                                     element={<PasswordReset method="sendMail" />}

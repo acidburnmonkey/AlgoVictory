@@ -1,12 +1,10 @@
 from pprint import pprint
 
+from django.utils import timezone
 
-from sports.models import *
-from api.models import *
+from api.models import User
 
-query = User.objects.filter(premium=True, username='mal0').first()
+query = User.objects.filter(premium=True)
 
-pprint(f"Type: {type(query)}")
 
 pprint(query)
-pprint(query is None)

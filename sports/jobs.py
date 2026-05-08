@@ -1,5 +1,5 @@
 import unicodedata
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 
 import requests
 from django.db.models import QuerySet

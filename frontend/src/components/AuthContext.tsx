@@ -30,7 +30,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [avatar, setAvatar] = useState<string | null>(null);
 
     useEffect(() => {
-        console.debug('calling Auth()');
         auth().catch(() => setIsAuthenticated(false));
     }, []);
 
@@ -78,7 +77,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const getUserInfo = async () => {
         try {
             const response: AxiosResponse = await api.get('/api/user-info/');
-            console.log('response user-info:', response);
 
             if (response.status === 200) {
                 const data: userInfo = response.data;
@@ -86,8 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setAvatar(data.avatar);
                 setIsPremium(data.premium);
             }
-        } catch (err) {
-            console.log('err', err);
+        } catch {
         }
     };
 

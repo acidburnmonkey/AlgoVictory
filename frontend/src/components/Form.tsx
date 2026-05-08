@@ -43,9 +43,7 @@ function Form({ route, method }: FormProps) {
             return;
         }
 
-        const nextUrl = `${API_URL}/api/social-token/`;
-        const params = new URLSearchParams({ process: 'login', next: nextUrl });
-        window.location.href = `${API_URL}/accounts/google/login/?${params.toString()}`;
+        window.location.href = `${API_URL}/accounts/google/login/?process=login`;
     };
 
     const handleXlogin = () => {
@@ -54,9 +52,7 @@ function Form({ route, method }: FormProps) {
             return;
         }
 
-        const nextUrl = `${API_URL}/api/social-token/`;
-        const params = new URLSearchParams({ process: 'login', next: nextUrl });
-        window.location.href = `${API_URL}/accounts/twitter/login/?${params.toString()}`;
+        window.location.href = `${API_URL}/accounts/twitter/login/?process=login`;
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

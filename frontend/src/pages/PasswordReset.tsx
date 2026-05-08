@@ -67,7 +67,6 @@ function PasswrodReset({ method }: FormProps) {
                 setSubmitted(true);
             }
 
-            console.log(response);
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 const status = err.response?.status;
@@ -77,8 +76,6 @@ function PasswrodReset({ method }: FormProps) {
                 } else {
                     setMessage('Incorrect email');
                 }
-
-                console.error(status);
             }
         } finally {
             setLoading(false);
@@ -117,7 +114,6 @@ function PasswrodReset({ method }: FormProps) {
                     data?.detail ||
                     'Something went wrong';
                 setError(msg);
-                console.error(err.response?.status);
             }
         } finally {
             setLoading(false);

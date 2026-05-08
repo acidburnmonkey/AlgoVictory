@@ -32,6 +32,4 @@ api.interceptors.request.use(
     (error) => Promise.reject(error),
 );
 
-console.log('API Base URL:', api.defaults.baseURL);
-
 export default api;

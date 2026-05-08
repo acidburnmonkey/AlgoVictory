@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('sports', '0006_fightermodel_birth_date_and_more'),
     ]

@@ -10,13 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 if os.getenv('production'):
-    SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
     DEBUG = False
 else:
-    SECRET_KEY = 'django-insecure-6uj=5$eha)16v(-xleylct%vpcqhc36rrpuuiygqjq2x#zvk8('
     DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'https://algovictory.com/']
 
 
 REST_FRAMEWORK = {
@@ -177,7 +176,7 @@ ACCOUNT_ADAPTER = 'api.adapters.AllauthAdapter'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
-ACCOUNT_ALLOW_EXTERNAL_REDIRECTS = True
+ACCOUNT_ALLOW_EXTERNAL_REDIRECTS = False
 
 
 AUTHENTICATION_BACKENDS = (

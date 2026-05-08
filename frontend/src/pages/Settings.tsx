@@ -23,10 +23,9 @@ function Settings() {
                 if (res.status === 200) {
                     setUserDetails(res.data);
 
-                    console.debug('getUserDetails : ', res.data);
                 }
             })
-            .catch((err) => console.error('failed at getUserDetails: ', err));
+            .catch(() => {});
     };
 
     useEffect(() => {

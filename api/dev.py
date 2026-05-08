@@ -23,5 +23,6 @@ SPORTS_API_KEY = os.getenv("SPORTS_API_KEY")
 
 def get_logger(name: str) -> logging.Logger:
     formatter = " %(levelname)s | %(funcName)s| %(message)s"
-    logging.basicConfig(format=formatter, level=logging.DEBUG)
+    level = logging.INFO if os.getenv('production') else logging.DEBUG
+    logging.basicConfig(format=formatter, level=level)
     return logging.getLogger(name)

@@ -13,8 +13,6 @@ interface ProtectedRouteProps {
 function LogedInLock({ children }: ProtectedRouteProps) {
     const { isAuthenticated } = useAuth();
 
-    console.log('children:', children);
-
     if (isAuthenticated === null) {
         return (
             <Box

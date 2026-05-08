@@ -46,7 +46,7 @@ class SocialToken(APIView):
             }
         )
 
-        logger.debug(params)
+        logger.debug("Exchanging JWT tokens")
 
         return redirect(f'{FRONTEND_URL}/home?{params}')
 

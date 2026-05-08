@@ -29,20 +29,6 @@ class ShowAllEventsView(generics.ListAPIView):
     queryset = UpcomingEventsModel.objects.all()
 
 
-class TestView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request: Request) -> None:
-        print("""
-              TEST view
-              """)
-
-        print("request", request.user)
-        print("request username", request.user)
-
-        return Response({'message': 'ok', 'debug': 'debuging'}, status=200)  # pyright: ignore
-
-
 class FightCardView(generics.ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = CardSerializer

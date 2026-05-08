@@ -16,4 +16,3 @@ def flood(endpoint='/'):
 
 if __name__ == '__main__':
     flood('sports/show-events/')
-

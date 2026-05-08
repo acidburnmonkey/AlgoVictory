@@ -20,9 +20,6 @@ class AllauthAdapter(DefaultAccountAdapter):
         uid = context.get('uid', '')
         reset_url = f"{FRONTEND_URL}/reset-password/{uid}&{key}"
 
-        logger.debug(f"key : {key}")
-        logger.debug(f"uid : {uid}")
-
         html_content = f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #333;">AlgoVictory Password Reset</h2>

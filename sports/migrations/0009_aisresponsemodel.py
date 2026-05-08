@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('sports', '0008_fightermodel_imageurl'),
     ]
@@ -16,7 +15,15 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('chatter', models.JSONField()),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ai_analysis', to='sports.upcomingeventsmodel', to_field='eventId')),
+                (
+                    'event',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='ai_analysis',
+                        to='sports.upcomingeventsmodel',
+                        to_field='eventId',
+                    ),
+                ),
             ],
         ),
     ]

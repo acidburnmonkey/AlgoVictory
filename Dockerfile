@@ -15,4 +15,4 @@ RUN mkdir -p /app/data
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "uv run python manage.py migrate && uv run python manage.py collectstatic --noinput && uv run gunicorn divinatio.wsgi:application --bind 0.0.0.0:8000 --workers 3"]
+CMD ["sh", "-c", "uv run python manage.py migrate && uv run python manage.py collectstatic --noinput && uv run gunicorn divinatio.wsgi:application --bind 0.0.0.0:8000 --workers 1"]

@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 if os.getenv('production'):
     SITE_ID = 3
-    DEBUG = True
+    DEBUG = False
 else:
     SITE_ID = 2
     DEBUG = True

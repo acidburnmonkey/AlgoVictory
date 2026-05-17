@@ -14,10 +14,9 @@ import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
-import { payStripe } from '../paymentUtil';
 
 function NavBar() {
-    const { isAuthenticated, isPremium, user, avatar, logout } = useAuth();
+    const { isAuthenticated, user, avatar, logout } = useAuth();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -85,55 +84,54 @@ function NavBar() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     {isAuthenticated === null ? null : isAuthenticated ? (
                         <>
-                            {!isPremium && (
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                    borderRadius: '8px',
+                                    padding: '2px',
+                                    cursor: 'default',
+                                    overflow: 'hidden',
+                                    opacity: 0.35,
+                                    pointerEvents: 'none',
+                                    '&::before': {
+                                        content: '""',
+                                        position: 'absolute',
+                                        top: '-150%',
+                                        left: '-150%',
+                                        width: '400%',
+                                        height: '400%',
+                                        background:
+                                            'conic-gradient(#FFD54F, #FF8F00, #FFB300, #FFD54F)',
+                                        animation: 'none',
+                                    },
+                                    '@keyframes spinBorder': {
+                                        '100%': { transform: 'rotate(360deg)' },
+                                    },
+                                }}
+                            >
                                 <Box
-                                    onClick={payStripe}
+                                    component="span"
                                     sx={{
                                         position: 'relative',
-                                        borderRadius: '8px',
-                                        padding: '2px',
-                                        cursor: 'pointer',
-                                        overflow: 'hidden',
-                                        '&::before': {
-                                            content: '""',
-                                            position: 'absolute',
-                                            top: '-150%',
-                                            left: '-150%',
-                                            width: '400%',
-                                            height: '400%',
-                                            background:
-                                                'conic-gradient(#FFD54F, #FF8F00, #FFB300, #FFD54F)',
-                                            animation: 'spinBorder 3s linear infinite',
-                                        },
-                                        '@keyframes spinBorder': {
-                                            '100%': { transform: 'rotate(360deg)' },
+                                        display: 'block',
+                                        borderRadius: '6px',
+                                        background: (t) => t.palette.background.default,
+                                        px: 2,
+                                        py: 0.5,
+                                        color: '#FFB300',
+                                        fontWeight: 600,
+                                        fontSize: '0.8125rem',
+                                        textAlign: 'center',
+                                        whiteSpace: 'nowrap',
+                                        transition: 'color 0.2s ease',
+                                        '&:hover': {
+                                            color: '#FFB300',
                                         },
                                     }}
                                 >
-                                    <Box
-                                        component="span"
-                                        sx={{
-                                            position: 'relative',
-                                            display: 'block',
-                                            borderRadius: '6px',
-                                            background: (t) => t.palette.background.default,
-                                            px: 2,
-                                            py: 0.5,
-                                            color: '#FFB300',
-                                            fontWeight: 600,
-                                            fontSize: '0.8125rem',
-                                            textAlign: 'center',
-                                            whiteSpace: 'nowrap',
-                                            transition: 'color 0.2s ease',
-                                            '&:hover': {
-                                                color: '#FFD54F',
-                                            },
-                                        }}
-                                    >
-                                        Buy Full Access
-                                    </Box>
+                                    Buy Full Access
                                 </Box>
-                            )}
+                            </Box>
                             <Avatar
                                 alt={user ?? undefined}
                                 src={avatar ?? undefined}

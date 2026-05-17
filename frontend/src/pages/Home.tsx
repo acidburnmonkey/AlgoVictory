@@ -169,6 +169,7 @@ function GottaPay() {
                         Multi-model fight predictions One month access for $5
                     </p>
                     <button
+                        disabled
                         onClick={payStripe}
                         className="mt-1 px-7 py-2.5 rounded-xl font-black text-sm tracking-widest uppercase hover:opacity-90 active:opacity-75"
                         style={{

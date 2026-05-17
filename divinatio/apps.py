@@ -9,5 +9,5 @@ class AlgoVictoryConfig(AppConfig):
     def ready(self):
         from . import runapscheduler
 
-        if os.environ.get('RUN_MAIN') == 'true':
+        if os.environ.get('RUN_MAIN') == 'true' or os.environ.get('production'):
             runapscheduler.start()

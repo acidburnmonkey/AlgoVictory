@@ -11,13 +11,12 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.dev import API_PORT, FRONTEND_URL, get_logger
+from api.dev import FRONTEND_URL, get_logger
 from api.models import User
 from api.serializers import EmailSendSerializer, SetPasswordSerializer, UserInfoSerializer, UserSerializer
 
 load_dotenv()
 
-REDIRECT_URI = f'http://127.0.0.1:{API_PORT}/google/redirect'
 
 logger = get_logger(__name__)
 

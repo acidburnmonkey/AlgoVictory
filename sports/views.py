@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from rest_framework import generics, permissions
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -26,14 +27,18 @@ class PremiumUser(permissions.BasePermission):
 class ShowAllEventsView(generics.ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = UpcomingEventsSerializer
-    queryset = UpcomingEventsModel.objects.all()
+
+    def get_queryset(self):
+        return UpcomingEventsModel.objects.all()
 
 
 class FightCardView(generics.ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = CardSerializer
-    upcoming_now: int | None = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
-    queryset = FightModel.objects.prefetch_related('fightfightermodel_set__fighter').filter(event__eventId=upcoming_now)
+
+    def get_queryset(self):
+        upcoming_now = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
+        return FightModel.objects.prefetch_related('fightfightermodel_set__fighter').filter(event__eventId=upcoming_now)
 
 
 class AiAnalysisView(generics.RetrieveAPIView):
@@ -42,4 +47,7 @@ class AiAnalysisView(generics.RetrieveAPIView):
 
     def get_object(self) -> AisResponseModel:
         event_id: int | None = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
-        return AisResponseModel.objects.get(event_id=event_id)
+        obj = AisResponseModel.objects.filter(event_id=event_id).first()
+        if obj is None:
+            raise NotFound("AI analysis not available yet.")
+        return obj

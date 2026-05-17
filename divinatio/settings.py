@@ -10,12 +10,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 if os.getenv('production'):
+    SITE_ID = 3
     DEBUG = False
 else:
+    SITE_ID = 2
     DEBUG = True
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'https://algovictory.com/']
+
+
+if os.getenv('production'):
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
+else:
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 REST_FRAMEWORK = {
@@ -73,6 +80,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -108,7 +116,7 @@ WSGI_APPLICATION = 'divinatio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': Path(os.getenv('DB_PATH', str(BASE_DIR / 'db.sqlite3'))),
     }
 }
 
@@ -139,7 +147,14 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "api.User"
@@ -151,7 +166,6 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 60
 
 # ALLAUTH settings
 # social auth , google
-SITE_ID = 2
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -178,6 +192,10 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 ACCOUNT_ALLOW_EXTERNAL_REDIRECTS = False
 
+if os.getenv('production'):
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
@@ -186,15 +204,20 @@ AUTHENTICATION_BACKENDS = (
 
 
 LOGIN_REDIRECT_URL = '/api/social-token/'  # exchanging session for JWT
-LOGOUT_REDIRECT_URL = 'http://127.0.0.1:5173/login'
+LOGOUT_REDIRECT_URL = '/login/'
 
-## DEPLOY change
-CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:5173',
-    'http://localhost:5173',
-]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:5173',
-    'http://localhost:5173',
-]
+
+if os.getenv('production'):
+    _origins = [o for o in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',') if o]
+    CORS_ALLOWED_ORIGINS = _origins
+    CSRF_TRUSTED_ORIGINS = _origins
+else:
+    CORS_ALLOWED_ORIGINS = [
+        'http://127.0.0.1:5173',
+        'http://localhost:5173',
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        'http://127.0.0.1:5173',
+        'http://localhost:5173',
+    ]

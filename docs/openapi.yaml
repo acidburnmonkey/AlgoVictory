@@ -377,28 +377,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /sports/test/:
-    get:
-      tags: [Sports]
-      summary: Debug test endpoint
-      description: Returns a static debug payload. No authentication required.
-      security: []
-      responses:
-        '200':
-          description: Debug response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: ok
-                  debug:
-                    type: string
-                    example: debuging
-                required: [message, debug]
-
   /payments/stripe-pay/:
     post:
       tags: [Payments]

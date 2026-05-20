@@ -1,14 +1,13 @@
 import os
 
+import resend
 from allauth.account.adapter import DefaultAccountAdapter
-from dotenv import load_dotenv
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Category, Mail
 
 from .dev import FRONTEND_URL, get_logger
 
-load_dotenv()
 logger = get_logger(__name__)
+
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 
 class AllauthAdapter(DefaultAccountAdapter):
@@ -42,17 +41,13 @@ class AllauthAdapter(DefaultAccountAdapter):
         </div>
         """
 
-        message = Mail(
-            from_email='algovictory.unify491@aleeas.com',
-            to_emails=email,
-            subject='AlgoVictory - Reset Your Password',
-            html_content=html_content,
-        )
-        message.category = Category('password reset')
-
         try:
-            sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
-            sg.send(message)
-            logger.debug(" Password reset Email sent")
+            resend.Emails.send({
+                "from": os.getenv("DEFAULT_FROM_EMAIL", "onboarding@resend.dev"),
+                "to": email,
+                "subject": "AlgoVictory - Reset Your Password",
+                "html": html_content,
+            })
+            logger.debug("Password reset email sent")
         except Exception as e:
             logger.critical(f"Failed to send reset email: {e}")

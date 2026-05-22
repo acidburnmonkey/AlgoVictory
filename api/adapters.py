@@ -2,6 +2,7 @@ import os
 
 import resend
 from allauth.account.adapter import DefaultAccountAdapter
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
 from .dev import FRONTEND_URL, get_logger
 
@@ -42,12 +43,33 @@ class AllauthAdapter(DefaultAccountAdapter):
         """
 
         try:
-            resend.Emails.send({
-                "from": os.getenv("DEFAULT_FROM_EMAIL", "onboarding@resend.dev"),
-                "to": email,
-                "subject": "AlgoVictory - Reset Your Password",
-                "html": html_content,
-            })
+            resend.Emails.send(
+                {
+                    "from": "noreply@algovictory.com",
+                    "to": email,
+                    "subject": "AlgoVictory - Reset Your Password",
+                    "html": html_content,
+                }
+            )
             logger.debug("Password reset email sent")
         except Exception as e:
             logger.critical(f"Failed to send reset email: {e}")
+
+
+class SocialAccountAdapter(DefaultSocialAccountAdapter):
+    def populate_username(self, request, sociallogin):
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+
+        user = sociallogin.user
+        if user.username:
+            return
+
+        base = (user.email or '').split('@')[0] or 'user'
+        username = base
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base}{counter}"
+            counter += 1
+        user.username = username

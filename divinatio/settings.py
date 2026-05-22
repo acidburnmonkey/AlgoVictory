@@ -185,6 +185,8 @@ SOCIALACCOUNT_QUERY_EMAIL = True
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@algovictory.com'
 ACCOUNT_ADAPTER = 'api.adapters.AllauthAdapter'
+SOCIALACCOUNT_ADAPTER = 'api.adapters.SocialAccountAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True

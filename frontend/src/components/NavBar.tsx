@@ -49,9 +49,11 @@ function NavBar() {
                         component={RouterLink}
                         to="/home"
                         variant="h6"
+                        noWrap
                         sx={{
                             textDecoration: 'none',
                             fontWeight: 700,
+                            fontSize: { xs: '0.9rem', sm: '1.25rem' },
                             background:
                                 'linear-gradient(135deg, #FFD54F 0%, #FFB300 50%, #FF8F00 100%)',
                             backgroundClip: 'text',
@@ -60,9 +62,10 @@ function NavBar() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: 0.8,
+                            flexShrink: 0,
                         }}
                     >
-                        <img src="/logo.svg" alt="logo" style={{ width: 22, height: 22 }} />
+                        <img src="/logo.svg" alt="logo" style={{ width: 22, height: 22, flexShrink: 0 }} />
                         AlgoVictory
                     </Typography>
                     <Button
@@ -70,6 +73,7 @@ function NavBar() {
                         to="/events"
                         variant="text"
                         sx={{
+                            display: { xs: 'none', sm: 'inline-flex' },
                             color: 'text.primary',
                             '&:hover': {
                                 color: 'primary.main',
@@ -220,7 +224,7 @@ function NavBar() {
                                 to="/register"
                                 variant="contained"
                                 size="small"
-                                sx={{ px: 2.5 }}
+                                sx={{ px: { xs: 1.5, sm: 2.5 } }}
                             >
                                 Register
                             </Button>

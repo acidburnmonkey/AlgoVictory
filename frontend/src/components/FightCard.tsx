@@ -188,15 +188,15 @@ function FighterCol({ fighter, color, align }: FighterColProps) {
                 {fighter.nickname ? `"${fighter.nickname}"` : ''}
             </span>
 
-            <div>
+            <div className="min-w-0 w-full">
                 <p
-                    className="text-xl font-black leading-tight"
+                    className="text-sm sm:text-xl font-black leading-tight truncate"
                     style={{ color: '#F5F5F5' }}
                 >
                     {fighter.first_name}
                 </p>
                 <p
-                    className="text-xl font-black leading-tight"
+                    className="text-sm sm:text-xl font-black leading-tight truncate"
                     style={{ color: '#F5F5F5' }}
                 >
                     {fighter.last_name}
@@ -246,7 +246,10 @@ function FightCard() {
 
     if (!card || !fighter1 || !fighter2) {
         return (
-            <div className="flex items-center justify-center" style={{ minHeight: 1400 }}>
+            <div
+                className="flex items-center justify-center"
+                style={{ minHeight: 1400 }}
+            >
                 <span className="text-sm animate-pulse" style={{ color: F1_COLOR }}>
                     Loading fight card…
                 </span>
@@ -259,7 +262,7 @@ function FightCard() {
     const f2Name = `${fighter2.first_name} ${fighter2.last_name}`;
 
     return (
-        <div className="w-[80%] mx-auto py-8 flex flex-col gap-5">
+        <div className="w-[95%] sm:w-[80%] mx-auto py-8 flex flex-col gap-5">
             {/* Header */}
             <div className="rounded-2xl p-6 flex flex-col items-center" style={glass}>
                 <h1
@@ -283,7 +286,10 @@ function FightCard() {
             </div>
 
             {/* Fighter matchup */}
-            <div className="rounded-2xl p-6 relative overflow-hidden" style={glass}>
+            <div
+                className="rounded-2xl p-6 relative overflow-hidden w-full sm:w-1/2 sm:mx-auto"
+                style={glass}
+            >
                 {/* UFC canvas wallpaper */}
                 <div
                     className="absolute inset-0 pointer-events-none"
@@ -297,10 +303,11 @@ function FightCard() {
                 />
                 <div className="relative flex items-start justify-center gap-0">
                     {/* Fighter 1 */}
-                    <div className="flex flex-col items-start gap-4">
+                    <div className="flex flex-col items-start gap-4 flex-1 min-w-0">
                         <div
-                            className="w-[266px] h-[406px] flex items-center justify-center rounded-xl overflow-hidden"
+                            className="w-full sm:w-[266px] sm:h-[406px] flex items-center justify-center rounded-xl overflow-hidden"
                             style={{
+                                aspectRatio: '266 / 406',
                                 background: `linear-gradient(135deg, ${F1_COLOR}18, ${F1_COLOR}06)`,
                             }}
                         >
@@ -318,9 +325,9 @@ function FightCard() {
                     </div>
 
                     {/* VS */}
-                    <div className="flex items-center self-stretch px-8">
+                    <div className="flex items-center self-stretch px-2 sm:px-8 shrink-0">
                         <span
-                            className="text-5xl font-black"
+                            className="text-3xl sm:text-5xl font-black"
                             style={{
                                 color: '#EF1C1C',
                                 fontStyle: 'italic',
@@ -334,10 +341,11 @@ function FightCard() {
                     </div>
 
                     {/* Fighter 2 */}
-                    <div className="flex flex-col items-end gap-4">
+                    <div className="flex flex-col items-end gap-4 flex-1 min-w-0">
                         <div
-                            className="w-[266px] h-[406px] flex items-center justify-center rounded-xl overflow-hidden"
+                            className="w-full sm:w-[266px] sm:h-[406px] flex items-center justify-center rounded-xl overflow-hidden"
                             style={{
+                                aspectRatio: '266 / 406',
                                 background: `linear-gradient(225deg, ${F2_COLOR}18, ${F2_COLOR}06)`,
                             }}
                         >

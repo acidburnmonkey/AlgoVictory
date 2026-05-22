@@ -521,7 +521,7 @@ function AiAnalysis() {
     const qwen = data.chatter['qwen/qwen3-32b'].analysis;
 
     return (
-        <div className="w-[80%] mx-auto py-8 flex flex-col gap-6">
+        <div className="w-[95%] sm:w-[80%] mx-auto py-8 flex flex-col gap-6">
             {/* ── Consensus graph ── */}
             <ConsensusPanel data={data} />
 
@@ -562,7 +562,7 @@ function AiAnalysis() {
                         </div>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                         <FighterCard
                             name={qwen.fighter_1.name}
                             advantages={qwen.fighter_1.Advantages}
@@ -650,7 +650,7 @@ function AiAnalysis() {
                                         </span>
                                     </div>
 
-                                    <div className="flex gap-3">
+                                    <div className="flex flex-col sm:flex-row gap-3">
                                         <FighterCard
                                             name={analysis.fighter_1.name}
                                             advantages={analysis.fighter_1.Advantages}

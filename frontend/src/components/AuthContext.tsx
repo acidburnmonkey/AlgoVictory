@@ -46,6 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     //main auth loginc
     const refreshToken = async () => {
         const refresh = localStorage.getItem(REFRESH_TOKEN);
+        //debug
+        console.debug('refreshing token');
+
         try {
             const res = await api.post('/api/token/refresh/', { refresh });
             if (res.status === 200) {
@@ -85,8 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setAvatar(data.avatar);
                 setIsPremium(data.premium);
             }
-        } catch {
-        }
+        } catch { }
     };
 
     //shared functions
@@ -104,7 +106,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated, user, avatar, login, logout, isPremium, refreshUserInfo: getUserInfo }}
+            value={{
+                isAuthenticated,
+                user,
+                avatar,
+                login,
+                logout,
+                isPremium,
+                refreshUserInfo: getUserInfo,
+            }}
         >
             {children}
         </AuthContext.Provider>

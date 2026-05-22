@@ -55,6 +55,15 @@ def expire_meberships():
                 user.save()
 
 
+def first_run():
+    fetch_mma_schedules()
+    get_fighter_stats()
+    set_fighter_image()
+    send_card_to_groq()
+    schedule_archive()
+    expire_meberships()
+
+
 # scheduler general
 def start():
 
@@ -101,10 +110,4 @@ def start():
     )
 
     scheduler.start()
-
-    fetch_mma_schedules()
-    get_fighter_stats()
-    set_fighter_image()
-    # send_card_to_groq()
-    schedule_archive()
-    expire_meberships()
+    # first_run()

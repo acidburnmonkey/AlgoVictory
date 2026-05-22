@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: AlgoVictory API
-  version: 0.1.0
+  version: 1.0.0
   description: |
     HTTP API for AlgoVictory. The service is a Django 5 + Django REST Framework application
     that issues JWTs via SimpleJWT, supports Google and Twitter sign-in through django-allauth.
@@ -16,8 +16,8 @@ info:
 servers:
   - url: http://127.0.0.1:8000
     description: Local development
-  - url: http://localhost:8000
-    description: Local development (localhost)
+  - url: https://algovictory.com
+    description: production deployment
 tags:
   - name: Auth
     description: Account creation and JWT lifecycle
@@ -602,7 +602,19 @@ components:
           type: string
         status:
           type: string
-      required: [id, active, dateTime, day, eventId, leagueId, name, season, shortName, status]
+      required:
+        [
+          id,
+          active,
+          dateTime,
+          day,
+          eventId,
+          leagueId,
+          name,
+          season,
+          shortName,
+          status,
+        ]
 
     Fighter:
       type: object

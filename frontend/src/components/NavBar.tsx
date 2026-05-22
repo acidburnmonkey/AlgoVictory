@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { payStripe } from '../paymentUtil';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -16,7 +17,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 
 function NavBar() {
-    const { isAuthenticated, user, avatar, logout } = useAuth();
+    const { isAuthenticated, isPremium, user, avatar, logout } = useAuth();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -84,15 +85,15 @@ function NavBar() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     {isAuthenticated === null ? null : isAuthenticated ? (
                         <>
+                            {!isPremium && (
                             <Box
+                                onClick={payStripe}
                                 sx={{
                                     position: 'relative',
                                     borderRadius: '8px',
                                     padding: '2px',
-                                    cursor: 'default',
+                                    cursor: 'pointer',
                                     overflow: 'hidden',
-                                    opacity: 0.35,
-                                    pointerEvents: 'none',
                                     '&::before': {
                                         content: '""',
                                         position: 'absolute',
@@ -102,7 +103,7 @@ function NavBar() {
                                         height: '400%',
                                         background:
                                             'conic-gradient(#FFD54F, #FF8F00, #FFB300, #FFD54F)',
-                                        animation: 'none',
+                                        animation: 'spinBorder 3s linear infinite',
                                     },
                                     '@keyframes spinBorder': {
                                         '100%': { transform: 'rotate(360deg)' },
@@ -132,6 +133,7 @@ function NavBar() {
                                     Buy Full Access
                                 </Box>
                             </Box>
+                            )}
                             <Avatar
                                 alt={user ?? undefined}
                                 src={avatar ?? undefined}

@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: algovictory_backend
     build: .
     env_file:
       - .env
@@ -7,21 +8,19 @@ services:
       - production=True
       - DB_PATH=/app/data/db.sqlite3
     volumes:
-      - sqlite_data:/app/data
+      - /dockers/algovictory_backend:/app/data
     expose:
-      - "8000"
+      - '8000'
     restart: unless-stopped
 
   frontend:
+    container_name: algovictory_frontend
     build:
       context: ./frontend
       args:
         VITE_API_URL: ${VITE_API_URL}
     ports:
-      - "8280:80"
+      - '8280:80'
     depends_on:
       - backend
     restart: unless-stopped
-
-volumes:
-  sqlite_data:

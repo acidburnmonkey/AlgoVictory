@@ -21,7 +21,7 @@ def parse_model_response(text: str) -> dict:
 
 
 def get_fight_card() -> list[FightCardType]:
-    upcoming_now: int | None = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
+    upcoming_now: int | None = UpcomingEventsModel.objects.order_by('dateTime').values_list('eventId', flat=True).first()
     queryset = FightModel.objects.prefetch_related('fightfightermodel_set__fighter').filter(event__eventId=upcoming_now)
     data: list[FightCardType] = CardSerializer(queryset, many=True).data
     return data
@@ -73,7 +73,7 @@ def send_card_to_groq() -> None:
             logger.error(f"  [parse error] {e}")
             results[model] = {"raw": raw}
 
-    event_id: int | None = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
+    event_id: int | None = UpcomingEventsModel.objects.order_by('dateTime').values_list('eventId', flat=True).first()
 
     AisResponseModel.objects.update_or_create(event_id=event_id, defaults={"chatter": results})
     logger.info('Added chatter to Ai row')

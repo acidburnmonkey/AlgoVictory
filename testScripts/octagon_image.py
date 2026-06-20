@@ -23,4 +23,5 @@ def get_octagon_image(raw: str) -> str | None:
 
 
 if __name__ == '__main__':
-    get_octagon_image('Jiří Procházka')
+    print(get_octagon_image('Jiří Procházka'))
+    print(get_octagon_image('Conor McGregor'))

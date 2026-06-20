@@ -67,15 +67,13 @@ def fetch_mma_schedules() -> None:
             'status': event.get('Status'),
         }
 
-        serializer = serializer_class(data=data)
+        instance = UpcomingEventsModel.objects.filter(eventId=event.get('EventId')).first()
+        serializer = serializer_class(instance, data=data)
 
         if serializer.is_valid():
             serializer.save()
             saved.append(serializer.data)
             logger.info(f'saved ok : {data}')
-
-        elif serializer.errors.get('eventId'):
-            pass
 
         else:
             errors.append(serializer.errors)
@@ -277,7 +275,7 @@ def set_fighter_image() -> None:
 
 
 def get_top_date() -> date | None:
-    event = UpcomingEventsModel.objects.all().first()
+    event = UpcomingEventsModel.objects.order_by('dateTime').first()
 
     if event:
         event_date: date = event.dateTime
@@ -287,7 +285,7 @@ def get_top_date() -> date | None:
 @util.close_old_connections
 def archive_event() -> None:
 
-    entry = UpcomingEventsModel.objects.all().first()
+    entry = UpcomingEventsModel.objects.order_by('dateTime').first()
 
     if entry:
         entry.pk = None

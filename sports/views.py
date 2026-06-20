@@ -37,7 +37,7 @@ class FightCardView(generics.ListAPIView):
     serializer_class = CardSerializer
 
     def get_queryset(self):
-        upcoming_now = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
+        upcoming_now = UpcomingEventsModel.objects.order_by('dateTime').values_list('eventId', flat=True).first()
         return FightModel.objects.prefetch_related('fightfightermodel_set__fighter').filter(event__eventId=upcoming_now)
 
 
@@ -46,7 +46,7 @@ class AiAnalysisView(generics.RetrieveAPIView):
     serializer_class = AisResponseSerializer
 
     def get_object(self) -> AisResponseModel:
-        event_id: int | None = UpcomingEventsModel.objects.values_list('eventId', flat=True).first()
+        event_id: int | None = UpcomingEventsModel.objects.order_by('dateTime').values_list('eventId', flat=True).first()
         obj = AisResponseModel.objects.filter(event_id=event_id).first()
         if obj is None:
             raise NotFound("AI analysis not available yet.")
